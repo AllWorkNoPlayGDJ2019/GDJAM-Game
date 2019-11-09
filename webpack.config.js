@@ -10,6 +10,9 @@ module.exports = {
         filename: 'app.bundle.js',
         //   path: path.resolve(__dirname, 'dist'),
     },
+    resolve:{
+        extensions:[".ts",".js",".tsx"]
+    },
     mode: 'development',
     module: {
         rules: [
@@ -18,7 +21,7 @@ module.exports = {
                 use:['style-loader','css-loader']
             },
             {
-                test: /\.tsx?$/,
+                test: /\.ts$/,
                 use: 'ts-loader',
                 exclude: /node_modules/,
             },
