@@ -15,11 +15,11 @@ export class factoryScene implements gameScene {
         public readonly gameStats: GameStats) {
     }
 
-    public background;
-    public belt;
-    public beltContainer;
-    public dollkeeper;
-    
+    public background: PIXI.Sprite;
+    public belt: PIXI.Sprite;
+    public beltContainer: PIXI.Container;
+    public dollkeeper: dollKeeper;
+
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
     public lightFilter = new PIXI.filters.AlphaFilter();
@@ -27,10 +27,8 @@ export class factoryScene implements gameScene {
 
     private textBox: PIXI.Text;
 
-    //private removeCallbacks: () => void;
-
     public showScene() {
-        
+
         this.app.stage = new PIXI.Container();
 
         this.background = new PIXI.Sprite(PIXI.Texture.WHITE);
@@ -45,9 +43,6 @@ export class factoryScene implements gameScene {
         const getSprite = (spriteSrc) => {
             return PIXI.Sprite.from(spriteSrc);
         };
-
-
-
 
         const belt = getSprite(this.assetManager.Textures["beltbackground"]);
         this.app.stage.addChild(belt);
@@ -97,7 +92,6 @@ export class factoryScene implements gameScene {
         box.scale.set(0.5, 0.5);
         box.position.set(appWidth - box.width, appHeight - 0.75 * box.height);
 
-
         this.clock = new Clock(
             getSprite(this.assetManager.Textures["clockFace"]),
             getSprite(this.assetManager.Textures["clockHourPointer"]),
@@ -107,9 +101,10 @@ export class factoryScene implements gameScene {
         this.clock.addWorkEndCallback(() => this.overTimeBegins());
         this.clock.addWorkStartCallback(() => this.workBegins());
 
-        this.clock.startClock(this.gameStats.currentDay);
+        this.clock.startClock();
         this.app.stage.addChild(this.clock.mainContainer);
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
+        this.lightFilter.alpha = 0.5;
 
         const dollSize = 128;
         this.dollkeeper = new dollKeeper(
@@ -132,46 +127,42 @@ export class factoryScene implements gameScene {
 
 
     private stayAtWork() {
+        console.log("stay at factory");
     }
 
     public removeScene() {
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
+        this.app.stage.removeChild(this.textBox);
+        this.textBox = undefined;
 
         this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
         this.clock.removeWorkEndCallbacks(() => this.overTimeBegins());
         this.clock.removeStartofDayCallbacks(() => this.workBegins());
     }
 
-    public workBegins()
-    {
+    public workBegins() {
+        this.clock.stopClock();
         this.lightSwitchSound.play();
-        this.lightFilter.alpha = 0.5;
-
+        this.lightFilter.alpha = 1.0;
+        this.clock.startClock();
         setTimeout(() => {
-            this.lightFilter.alpha = 1.0;
             this.workBuzzerSound.play();
             this.dollkeeper.startSpawn();
-        },
-        2000
-        );
+        }, 1000);
     }
 
     public overTimeBegins() {
         //play sound
         this.workBuzzerSound.play();
-
+        this.clock.stopClock();
         setTimeout(() => {
             //dim lights
-
             this.lightFilter.alpha = 0.5;
-            //this.beltContainer.AlphaFilter.alpha = 0.5;
-            //play sound of lights turned off
             this.lightSwitchSound.play();
+            this.clock.startClock();
             //spawn dialog box
-        },
-        1000
-        );
+        }, 1000);
         //dim lights slowly
         //show work is over
         //show Overtime text
