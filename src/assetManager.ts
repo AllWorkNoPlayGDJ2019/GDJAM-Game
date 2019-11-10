@@ -17,6 +17,7 @@ export class AssetManager {
         this.AssetLocations["playButton"] = "assets/play_hover.png";
         this.AssetLocations["kidMiddleSchoolBad"]="assets/kid_middle_school_hurt.png";
         this.AssetLocations["startMenu"] = "assets/startMenu.png";
+        this.AssetLocations["textBoxSample"] = "assets/textBoxes/textBoxSample.png";
     }
     public load(): Promise<void> {
         console.log('loading');

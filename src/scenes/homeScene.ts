@@ -38,15 +38,17 @@ export class homeScene implements gameScene {
 
         this.photoDisplayer.chooseAndDisplayPhoto();
 
-
-        const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
-        const exitButtonClickable = new Clickable(exitSign);
-        exitButtonClickable.addCallback(() => {
-            this.sceneManager.loadScene('factoryScene');
-        });
-        this.app.stage.addChild(exitSign);
-        exitSign.position.set(appWidth - exitSign.width, 0);
-
+        this.photoDisplayer.spawnClickablePrompt("textBoxSample", [
+          ()=>{
+            const exitSign = PIXI.Sprite.from(this.assetManager.Textures["exitSign"]);
+            const exitButtonClickable = new Clickable(exitSign);
+            exitButtonClickable.addCallback(() => {
+                this.sceneManager.loadScene('factoryScene');
+            });
+            this.app.stage.addChild(exitSign);
+            exitSign.position.set(this.app.view.width - exitSign.width, 0);
+          }
+        ]);
     }
 
     public removeScene() {
