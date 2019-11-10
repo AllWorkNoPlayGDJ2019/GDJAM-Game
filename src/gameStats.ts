@@ -39,8 +39,8 @@ export class GameStats{
     day1: dayStats = {
         moneyGoal: 60,
         happinessGoal: 6,
-        goodPhoto: "kidBabyGood",
-        badPhoto: "kidBabyBad"
+        goodPhoto: "kidInfantGood",
+        badPhoto: "kidInfantBad"
     };
 
     day2: dayStats = {
@@ -64,18 +64,10 @@ export class GameStats{
         badPhoto: "kidHighSchoolBad"
     };
 
-    day5: dayStats = {
-        moneyGoal: 60,
-        happinessGoal: 30,
-        goodPhoto: "kidAdultGood",
-        badPhoto: "kidAdultBad",
-    };
-
    public readonly daystatList = [
        this.day1,
        this.day2,
        this.day3,
-       this.day4,
-       this.day5
-   ];
+       this.day4
+    ];
 }
