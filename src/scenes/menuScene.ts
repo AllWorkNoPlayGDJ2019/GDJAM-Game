@@ -2,6 +2,7 @@ import * as PIXI from 'pixi.js'
 import { AssetManager } from '../assetManager';
 import { Clickable } from '../ui/clickable';
 import { SceneManager } from './sceneManager';
+import { Hoverable } from '../ui/hoverable';
 
 export class menuScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
@@ -34,12 +35,18 @@ export class menuScene implements gameScene {
 
         const playButton = getSprite(this.assetManager.Textures["playButton"]);
         const playButtonClickable = new Clickable(playButton);
+        const playButtonHoverable = new Hoverable(playButton);
+        playButtonHoverable.addMouseOverCallback(() => playButton.alpha = 0.5);
+        playButtonHoverable.addMouseOutCallback(() => playButton.alpha = 1);
+
         playButtonClickable.addCallback(() => {
-            this.sceneManager.loadScene('factory');
+            this.sceneManager.loadScene('factoryScene');
             alert('click');
         });
-        playButton.position.set(appWidth / 2 - playButton.width / 2, appHeight / 2);
         this.app.stage.addChild(playButton);
+        console.log(playButton.width)
+        playButton.position.set(appWidth / 2 - playButton.width / 2, appHeight / 2);
+        playButton.scale.set(0.5,0.5);
 
     }
 

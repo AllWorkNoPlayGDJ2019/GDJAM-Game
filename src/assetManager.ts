@@ -10,7 +10,7 @@ export class AssetManager {
         this.AssetLocations["beltbackground"] = "assets/belt_bckground.png";
         this.AssetLocations["box"] = "assets/box.png";
         this.AssetLocations["factory"] = "assets/factory.png";
-        this.AssetLocations["playbutton"] = "play_hover.png";
+        this.AssetLocations["playButton"] = "assets/play_hover.png";
         this.AssetLocations["doll"] = "assets/doll.png";
         this.AssetLocations["startMenu"] = "assets/startMenu.png";
         this.AssetLocations["exitSign"] = "assets/exit.png";
@@ -28,6 +28,7 @@ export class AssetManager {
                 for (let key of Object.keys(this.AssetLocations)) {
                     this.Textures[key] = resources[key].texture;
                 }
+                console.log({loaded:this.Textures});
                 resolve();
             });
         });

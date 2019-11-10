@@ -1,21 +1,20 @@
 import * as PIXI from 'pixi.js'
 export class Hoverable {
-    constructor(private container: PIXI.Container,
-        private sprite: PIXI.Sprite,
-        private position: PIXI.Point) {
-        this.sprite.position.set(this.position.x, this.position.y);
+    constructor(private sprite: PIXI.Sprite) {
         this.sprite.interactive = true;
+        this.sprite.buttonMode = true;
         this.sprite
-            .on('mouseover', this.mouseover)
-            .on('touchstart', this.mouseover)
+            .on('mouseover', ()=>this.mouseover())
+            .on('touchstart',()=>this.mouseover())
 
-            .on('mouseout', this.mouseout)
-            .on('touchend', this.mouseout);
-        this.container.addChild(sprite);
+            .on('mouseout',()=> this.mouseout())
+            .on('touchend',()=> this.mouseout());
+        this.mouseOutCallbacks = [];
+        this.mouseOverCallbacks = [];
     }
 
-    private mouseOverCallbacks: (() => {})[] = [];
-    private mouseOutCallbacks: (() => {})[] = [];
+    private readonly mouseOverCallbacks: (() => {})[];
+    private readonly mouseOutCallbacks: (() => {})[];
     private mouseover() {
         this.mouseOverCallbacks.forEach(x => x());
     }
