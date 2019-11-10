@@ -81,7 +81,7 @@ export class Clock {
                 this.endofDayCallbacks.forEach(x => x());
             }
             this.displayTime(this.time.getUTCHours(), this.time.getUTCMinutes());
-        }, 150);
+        }, 100);
     }
     public stopClock() {
         console.log("stopped time");
