@@ -5,6 +5,10 @@ export class Clock {
         private readonly circleClock: PIXI.Sprite,
         private readonly hourPointer: PIXI.Sprite,
         private readonly minutePointer: PIXI.Sprite, private readonly scaleFactor: number) {
+
+        this.workEndCallbacks = [];
+        this.workStartCallback = [];
+
         this.mainContainer = new PIXI.Container();
         this.mainContainer.addChild(this.circleClock);
         this.mainContainer.addChild(this.hourPointer);
@@ -22,6 +26,34 @@ export class Clock {
     }
 
 
+    private workStartCallback: (() => void)[] = [];
+    private workEndCallbacks: (() => void)[] = [];
+    private endofDayCallbacks: (() => void)[] = [];
+
+    public addWorkStartCallback(callback: () => void) {
+        this.workStartCallback.push(callback);
+    }
+
+    public addWorkEndCallback(callback: () => void) {
+        this.workEndCallbacks.push(callback);
+    }
+
+    public addEndofDayCallbacks(callback: () => void) {
+        this.endofDayCallbacks.push(callback);
+    }
+
+    public removeEndofDayCallbacks(callback: () => void) {
+        this.endofDayCallbacks = this.endofDayCallbacks.filter(x => x !== callback);
+    }
+
+    public removeStartofDayCallbacks(callback: () => void) {
+        this.workStartCallback = this.workStartCallback.filter(x => x !== callback);
+    }
+    public removeWorkEndCallbacks(callback: () => void) {
+        this.workEndCallbacks = this.workEndCallbacks.filter(x => x !== callback);
+    }
+
+
     public readonly mainContainer: PIXI.Container;
     private time: Date = new Date();
 
@@ -30,14 +62,25 @@ export class Clock {
         return this.time;
     }
 
-    public startClock(startTime:Date) {
+    public startClock(startTime: Date) {
+        console.log("started time");
         this.time = startTime;
-        window.setInterval(() => {
+        this.timerId = window.setInterval(() => {
             this.time.setMinutes(this.time.getMinutes() + 5);
+            if (this.time.getHours() == 6 && this.time.getMinutes() == 0) {
+                this.workStartCallback.forEach(x => x());
+            }
+            if (this.time.getHours() == 18 && this.time.getMinutes() == 0) {
+                this.workEndCallbacks.forEach(x => x());
+            }
+            if (this.time.getHours() == 23 && this.time.getMinutes() == 55) {
+                this.endofDayCallbacks.forEach(x => x());
+            }
             this.displayTime(this.time.getHours(), this.time.getMinutes());
         }, 1000);
     }
     public stopClock() {
+        console.log("stopped time");
         window.clearInterval(this.timerId);
     }
 
@@ -46,6 +89,5 @@ export class Clock {
         const minuteAngle = 2 * Math.PI * ((minute) % 60) / 60;
         this.hourPointer.rotation = hourAngle;
         this.minutePointer.rotation = minuteAngle;
-        console.log(hour, minute);
     }
 }

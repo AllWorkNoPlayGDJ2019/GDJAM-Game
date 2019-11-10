@@ -34,16 +34,4 @@ assetManager.load().then(() => {
         homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer)
     };
     sceneManager.loadScene("menuScene");
-    //scenes.factoryScene.showScene();
-    
 });
-//requestAnimationFrame( animate );
-//
-//function animate() {
-//
-//    requestAnimationFrame(animate);
-//
-//    // render the stage
-//    app.renderer.render(app.stage);
-//    //setTimeout(animate,1000/2);
-//}

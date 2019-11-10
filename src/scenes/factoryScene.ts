@@ -27,6 +27,8 @@ export class factoryScene implements gameScene {
 
     private textBox: PIXI.Text;
 
+    private removeCallbacks: () => void;
+
     public showScene() {
         
         this.app.stage = new PIXI.Container();
@@ -65,16 +67,14 @@ export class factoryScene implements gameScene {
         const playButtonClickable = new Clickable(playButton);
 
         playButtonClickable.addCallback(() => {
-            this.sceneManager.loadScene('homeScene');
             this.gameStats.finishDay(this.clock.getTime());
-            alert('click');
+            this.sceneManager.loadScene('homeScene');
         });
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth-playButton.width,0);
+        playButton.position.set(appWidth - playButton.width, 0);
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
-        
 
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
@@ -87,7 +87,7 @@ export class factoryScene implements gameScene {
                 });
                 this.textBox = new PIXI.Text(currentMoney + "/" + currentGoal, style);
                 this.app.stage.addChild(this.textBox);
-                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight*0.2);
+                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.2);
             }
             this.textBox.text = currentMoney + "/" + currentGoal;
         };
@@ -95,7 +95,7 @@ export class factoryScene implements gameScene {
 
         const box = getSprite(this.assetManager.Textures["box"]);
         box.scale.set(0.5, 0.5);
-        box.position.set(appWidth - box.width, appHeight -0.75* box.height);
+        box.position.set(appWidth - box.width, appHeight - 0.75 * box.height);
 
 
         this.clock = new Clock(
@@ -103,6 +103,9 @@ export class factoryScene implements gameScene {
             getSprite(this.assetManager.Textures["clockHourPointer"]),
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
+        this.clock.addEndofDayCallbacks(() => this.stayAtWork());
+        this.clock.addWorkEndCallback(() => this.workEnds());
+        this.clock.addWorkStartCallback(() => this.workBegins());
 
         this.clock.startClock(this.gameStats.currentDay);
         this.app.stage.addChild(this.clock.mainContainer);
@@ -114,9 +117,9 @@ export class factoryScene implements gameScene {
             4,
             this.assetManager.Textures["doll"],
             new PIXI.Point(dollSize, dollSize),
-            [new PIXI.Point(-100, appHeight * 0.75 -0.5* dollSize),
-            new PIXI.Point(-80, appHeight * 0.775 - 0.5*dollSize),
-            new PIXI.Point(-60, appHeight * 0.8 - 0.5*dollSize)],
+            [new PIXI.Point(-100, appHeight * 0.75 - 0.5 * dollSize),
+            new PIXI.Point(-80, appHeight * 0.775 - 0.5 * dollSize),
+            new PIXI.Point(-60, appHeight * 0.8 - 0.5 * dollSize)],
             new PIXI.Point(appWidth, 0),
             200,
             new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
@@ -125,11 +128,23 @@ export class factoryScene implements gameScene {
 
         this.workBegins();
         this.app.stage.addChildAt(box, this.app.stage.children.length);
+
+    }
+
+    private workBegins() {
+    }
+    private workEnds() {
+    }
+    private stayAtWork() {
     }
 
     public removeScene() {
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
+
+        this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
+        this.clock.removeWorkEndCallbacks(() => this.workEnds());
+        this.clock.removeStartofDayCallbacks(() => this.workBegins());
     }
 
     public workBegins()
