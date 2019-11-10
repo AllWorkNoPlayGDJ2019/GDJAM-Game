@@ -7,7 +7,9 @@ export class SceneManager {
             console.error("scene " + sceneName + " doesn't exist in the game objects");
             return;
         }
-        if (this.currentScene !== null) { (this.currentScene).removeScene(); }
+        if (this.currentScene !== null) { 
+            console.log("removing previous scene");
+            (this.currentScene).removeScene(); }
         sceneToLoad.showScene();
     }
 

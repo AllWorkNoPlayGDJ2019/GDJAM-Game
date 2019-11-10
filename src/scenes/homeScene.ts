@@ -3,11 +3,13 @@ import { AssetManager } from '../assetManager';
 import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
 import { photoDisplay } from '../photoDisplay';
+import { SceneManager } from './sceneManager';
 
 export class homeScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
         public readonly gameStats: GameStats,
+        public readonly sceneManager:SceneManager,
         public readonly photoDisplayer: photoDisplay) {
     }
 
@@ -18,7 +20,7 @@ export class homeScene implements gameScene {
         background.tint = 0x0000000;
         background.width = this.app.view.width;
         background.height = this.app.view.height;
-        console.log({w:background.width,h:background.height})
+        console.log({ w: background.width, h: background.height })
         this.app.stage.addChild(background)
 
         const appWidth = this.app.view.width;
@@ -36,12 +38,14 @@ export class homeScene implements gameScene {
 
         this.photoDisplayer.chooseAndDisplayPhoto();
 
-        
+
         const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
         const exitButtonClickable = new Clickable(exitSign);
-        exitButtonClickable.addCallback(() => alert('click'));
-        exitSign.position.set(appWidth - exitSign.width, 0);
+        exitButtonClickable.addCallback(() => {
+            this.sceneManager.loadScene('factoryScene');
+        });
         this.app.stage.addChild(exitSign);
+        exitSign.position.set(appWidth - exitSign.width, 0);
 
     }
 
