@@ -27,7 +27,7 @@ export class factoryScene implements gameScene {
 
     private textBox: PIXI.Text;
 
-    private removeCallbacks: () => void;
+    //private removeCallbacks: () => void;
 
     public showScene() {
         
