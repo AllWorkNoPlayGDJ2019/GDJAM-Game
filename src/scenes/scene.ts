@@ -1,5 +1,6 @@
 
 interface gameScene {
     readonly app:PIXI.Application;
-    showScene();
+    showScene():void;
+    removeScene():void;
 }

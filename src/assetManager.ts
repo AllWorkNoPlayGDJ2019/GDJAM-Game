@@ -13,19 +13,23 @@ export class AssetManager {
         this.AssetLocations["doll"]="assets/doll.png";
         this.AssetLocations["exitSign"]="assets/exit.png";
         this.AssetLocations["homebackground"]="assets/home_background.png";
+        this.AssetLocations["kidElementarySchoolGood"]="assets/elementary_school.png";
+        this.AssetLocations["playButton"] = "assets/play_hover.png";
         this.AssetLocations["kidMiddleSchoolBad"]="assets/kid_middle_school_hurt.png";
+        this.AssetLocations["startMenu"] = "assets/startMenu.png";
     }
     public load(): Promise<void> {
         console.log('loading');
         const loader = new PIXI.Loader();
         return new Promise((resolve) => {
             for (let key of Object.keys(this.AssetLocations)) {
-                loader.add(key,this.AssetLocations[key]);
+                loader.add(key, this.AssetLocations[key]);
             }
-            loader.load((_,resources)=>{
+            loader.load((_, resources) => {
                 for (let key of Object.keys(this.AssetLocations)) {
                     this.Textures[key] = resources[key].texture;
                 }
+                console.log({loaded:this.Textures});
                 resolve();
             });
         });
