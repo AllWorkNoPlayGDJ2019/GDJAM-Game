@@ -35,6 +35,7 @@ assetManager.load().then(() => {
     };
     sceneManager.loadScene("menuScene");
     //scenes.factoryScene.showScene();
+    
 });
 //requestAnimationFrame( animate );
 //

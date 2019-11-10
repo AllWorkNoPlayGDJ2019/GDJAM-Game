@@ -5,6 +5,7 @@ import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
 import { dollKeeper } from './dollKeeper';
 import { SceneManager } from './sceneManager';
+import { CreateAudio } from '../createAudio';
 
 
 export class factoryScene implements gameScene {
@@ -14,15 +15,25 @@ export class factoryScene implements gameScene {
         public readonly gameStats: GameStats) {
     }
 
+    public background;
+    public belt;
+    public beltContainer;
+    public dollkeeper;
+    
+    public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
+    public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
+    public lightFilter = new PIXI.filters.AlphaFilter();
+
     public showScene() {
+        
         this.app.stage = new PIXI.Container();
         this.app.stage.filterArea = new PIXI.Rectangle(0, 0, this.app.view.width, this.app.view.height);
 
-        const background = new PIXI.Sprite(PIXI.Texture.WHITE);
-        background.tint = 0x0000000;
-        background.width = this.app.view.width;
-        background.height = this.app.view.height;
-        this.app.stage.addChild(background)
+        this.background = new PIXI.Sprite(PIXI.Texture.WHITE);
+        this.background.tint = 0x0000000;
+        this.background.width = this.app.view.width;
+        this.background.height = this.app.view.height;
+        this.app.stage.addChild(this.background)
 
         const appWidth = this.app.view.width;
         const appHeight = this.app.view.height;
@@ -32,15 +43,17 @@ export class factoryScene implements gameScene {
         };
 
 
+
+
         const belt = getSprite(this.assetManager.Textures["beltbackground"]);
         this.app.stage.addChild(belt);
-        const beltContainer = new PIXI.Container();
-        beltContainer.addChild(belt);
+        this.beltContainer = new PIXI.Container();
+        this.beltContainer.addChild(belt);
         belt.position.set(0, 0);
         belt.width = appWidth;
         belt.height = appHeight;
-        this.app.stage.addChild(beltContainer);
-        beltContainer.filters = [new PIXI.filters.AlphaFilter(0.5)];
+        this.app.stage.addChild(this.beltContainer);
+        this.beltContainer.filters = [this.lightFilter];
 
         const factorySprite = getSprite(this.assetManager.Textures["belt"]);
 
@@ -80,7 +93,7 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(clock.mainContainer);
         clock.mainContainer.position = new PIXI.Point(50, 50);
 
-        const dollkeeper = new dollKeeper(
+        this.dollkeeper = new dollKeeper(
             this.app.stage,
             4,
             this.assetManager.Textures["doll"],
@@ -93,10 +106,50 @@ export class factoryScene implements gameScene {
             new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
             () => { this.gameStats.successfulAction(); moneyUpdater(); }
         );
-        dollkeeper.startSpawn();
+        
+
+
+        this.workBegins();
+        // test
+        setTimeout(this.overTimeBegins, 10000);
     }
 
     public removeScene() {
         this.app.stage.removeChild(this.app.stage);
+    }
+
+    public workBegins()
+    {
+        this.lightSwitchSound.play();
+        this.lightFilter.alpha = 0.5;
+
+        setTimeout(() => {
+            this.lightFilter.alpha = 1.0;
+            this.workBuzzerSound.play();
+            this.dollkeeper.startSpawn();
+        },
+        2000
+        );
+    }
+
+    public overTimeBegins() {
+        //play sound
+        this.workBuzzerSound.play();
+
+        setTimeout(() => {
+            //dim lights
+
+            this.lightFilter.alpha = 0.5;
+            //this.beltContainer.AlphaFilter.alpha = 0.5;
+            //play sound of lights turned off
+            this.lightSwitchSound.play();
+            //spawn dialog box
+        },
+        1000
+        );
+        //dim lights slowly
+        //show work is over
+        //show Overtime text
+        //
     }
 }
