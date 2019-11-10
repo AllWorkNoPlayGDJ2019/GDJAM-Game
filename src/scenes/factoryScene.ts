@@ -108,8 +108,8 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(this.clock.mainContainer);
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
 
-        this.dollkeeper = new dollKeeper(
         const dollSize = 128;
+        this.dollkeeper = new dollKeeper(
             this.app.stage,
             4,
             this.assetManager.Textures["doll"],
