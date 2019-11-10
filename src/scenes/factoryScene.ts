@@ -6,6 +6,7 @@ import { GameStats } from '../gameStats';
 import { dollKeeper } from './dollKeeper';
 import { SceneManager } from './sceneManager';
 import { CreateAudio } from '../createAudio';
+import { utilMath } from '../utilMath';
 
 
 export class factoryScene implements gameScene {
@@ -41,21 +42,21 @@ export class factoryScene implements gameScene {
         "assets/shadowWorkerFrames/shadowsA5.png"
     ];
 
-    public shadowSpritePaths2:string[] = new Array(
+    public shadowSpritePaths2:string[] = [
         "assets/shadowWorkerFrames/shadowsB1.png",
         "assets/shadowWorkerFrames/shadowsB2.png",
         "assets/shadowWorkerFrames/shadowsB3.png",
         "assets/shadowWorkerFrames/shadowsB4.png",
         "assets/shadowWorkerFrames/shadowsB5.png"
-    );
+    ];
 
-    public shadowSpritePaths3:string[] = new Array(
+    public shadowSpritePaths3:string[] = [
         "assets/shadowWorkerFrames/shadowsC1.png",
         "assets/shadowWorkerFrames/shadowsC2.png",
         "assets/shadowWorkerFrames/shadowsC3.png",
         "assets/shadowWorkerFrames/shadowsC4.png",
         "assets/shadowWorkerFrames/shadowsC5.png"
-    );
+    ];
 
     public showScene() {
 
@@ -180,8 +181,25 @@ export class factoryScene implements gameScene {
             } else {
                 shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths3[0]);
             }
-            shadowSprite.position.set(0, 0 - this.app.view.height/11); // manual spacing fix
+            let shadowPos = shadowSprite.position;
+            let shadowTarg = new PIXI.Point(0, 0);
+
+            shadowSprite.position.set(0-this.app.view.width, 0); // manual spacing fix
+            shadowSprite.width = this.app.view.width;
+            shadowSprite.height = this.app.view.height;
+
             this.app.stage.addChild(shadowSprite);  
+
+            
+
+            const spriteID = setInterval(() => {
+                shadowSprite.position = utilMath.lerpPoint(shadowPos, shadowTarg, 0.025);
+    
+                if (shadowPos.position === shadowTarg) {
+                    window.clearInterval(spriteID);
+                }
+            }, 33)
+
         }
             
     }
