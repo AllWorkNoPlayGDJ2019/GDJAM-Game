@@ -4,11 +4,13 @@ import { AssetManager } from '../assetManager';
 import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
 import { dollKeeper } from './dollKeeper';
+import { SceneManager } from './sceneManager';
 
 
 export class factoryScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
+        private readonly sceneManager: SceneManager,
         public readonly gameStats: GameStats) {
     }
 
@@ -47,7 +49,10 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(factorySprite);
         const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
         const exitButtonClickable = new Clickable(exitSign);
-        exitButtonClickable.addCallback(() => alert('click'));
+        exitButtonClickable.addCallback(() => {
+            this.sceneManager.loadScene('home');
+            this.gameStats.finishDay(clock.getTime());
+        });
         exitSign.position.set(appWidth - exitSign.width, 0);
         this.app.stage.addChild(exitSign);
 
@@ -69,7 +74,9 @@ export class factoryScene implements gameScene {
             getSprite(this.assetManager.Textures["clockFace"]),
             getSprite(this.assetManager.Textures["clockHourPointer"]),
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
-        clock.startClock();
+
+
+        clock.startClock(this.gameStats.currentDay);
         this.app.stage.addChild(clock.mainContainer);
         clock.mainContainer.position = new PIXI.Point(50, 50);
 
@@ -87,5 +94,9 @@ export class factoryScene implements gameScene {
             () => { this.gameStats.successfulAction(); moneyUpdater(); }
         );
         dollkeeper.startSpawn();
+    }
+
+    public removeScene() {
+        this.app.stage.removeChild(this.app.stage);
     }
 }
