@@ -15,15 +15,19 @@ export class factoryScene implements gameScene {
         public readonly gameStats: GameStats) {
     }
 
-    public background;
-    public belt;
-    public beltContainer;
-    public dollkeeper;
+
     
+
+    public background: PIXI.Sprite;
+    public belt: PIXI.Sprite;
+    public beltContainer: PIXI.Container;
+    public dollkeeper: dollKeeper;
+  
     public clockSound = new CreateAudio("clock.mp3");
     public conveyorSound = new CreateAudio("conveyor.mp3");
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
+  
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
 
@@ -96,19 +100,15 @@ export class factoryScene implements gameScene {
         const playButton = getSprite(this.assetManager.Textures["exitSign"]);
         const playButtonClickable = new Clickable(playButton);
 
-        playButtonClickable.addCallback(() => {
-            this.conveyorSound.stop();   // Stop audio
-            this.clockSound.stop();
-            this.sceneManager.loadScene('homeScene');
+        playButtonClickable.addCallback(() => {      
             this.gameStats.finishDay(this.clock.getTime());
-            alert('click');
+            this.sceneManager.loadScene('homeScene');
         });
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth-playButton.width,0);
+        playButton.position.set(appWidth - playButton.width, 0);
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
-        
 
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
@@ -121,7 +121,7 @@ export class factoryScene implements gameScene {
                 });
                 this.textBox = new PIXI.Text(currentMoney + "/" + currentGoal, style);
                 this.app.stage.addChild(this.textBox);
-                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight*0.2);
+                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.2);
             }
             this.textBox.text = currentMoney + "/" + currentGoal;
         };
@@ -129,18 +129,21 @@ export class factoryScene implements gameScene {
 
         const box = getSprite(this.assetManager.Textures["box"]);
         box.scale.set(0.5, 0.5);
-        box.position.set(appWidth - box.width, appHeight -0.75* box.height);
-
+        box.position.set(appWidth - box.width, appHeight - 0.75 * box.height);
 
         this.clock = new Clock(
             getSprite(this.assetManager.Textures["clockFace"]),
             getSprite(this.assetManager.Textures["clockHourPointer"]),
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
+        this.clock.addEndofDayCallbacks(() => this.stayAtWork());
+        this.clock.addWorkEndCallback(() => this.overTimeBegins());
+        this.clock.addWorkStartCallback(() => this.workBegins());
 
-        this.clock.startClock(this.gameStats.currentDay);
+        this.clock.startClock();
         this.app.stage.addChild(this.clock.mainContainer);
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
+        this.lightFilter.alpha = 0.5;
 
         const dollSize = 128;
         this.dollkeeper = new dollKeeper(
@@ -148,17 +151,22 @@ export class factoryScene implements gameScene {
             4,
             this.assetManager.Textures["doll"],
             new PIXI.Point(dollSize, dollSize),
-            [new PIXI.Point(-100, appHeight * 0.75 -0.5* dollSize),
-            new PIXI.Point(-80, appHeight * 0.775 - 0.5*dollSize),
-            new PIXI.Point(-60, appHeight * 0.8 - 0.5*dollSize)],
+            [new PIXI.Point(-100, appHeight * 0.75 - 0.5 * dollSize),
+            new PIXI.Point(-80, appHeight * 0.775 - 0.5 * dollSize),
+            new PIXI.Point(-60, appHeight * 0.8 - 0.5 * dollSize)],
             new PIXI.Point(appWidth, 0),
             200,
             new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
             () => { this.gameStats.successfulAction(); moneyUpdater(); }
         );
 
-        this.workBegins();
         this.app.stage.addChildAt(box, this.app.stage.children.length);
+
+    }
+
+
+    private stayAtWork() {
+        console.log("stay at factory");
     }
 
     public spawnShadows(rowCount: number) {
@@ -181,37 +189,38 @@ export class factoryScene implements gameScene {
     public removeScene() {
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
+        this.app.stage.removeChild(this.textBox);
+        this.conveyorSound.stop();   // Stop audio
+        this.clockSound.stop();   
+        this.textBox = undefined;
+
+        this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
+        this.clock.removeWorkEndCallbacks(() => this.overTimeBegins());
+        this.clock.removeStartofDayCallbacks(() => this.workBegins());
     }
 
-    public workBegins()
-    {
+    public workBegins() {
+        this.clock.stopClock();
         this.lightSwitchSound.play();
-        this.lightFilter.alpha = 0.5;
-
+        this.lightFilter.alpha = 1.0;
+        this.clock.startClock();
         setTimeout(() => {
-            this.lightFilter.alpha = 1.0;
             this.workBuzzerSound.play();
             this.dollkeeper.startSpawn();
-        },
-        2000
-        );
+        }, 1000);
     }
 
     public overTimeBegins() {
         //play sound
         this.workBuzzerSound.play();
-
+        this.clock.stopClock();
         setTimeout(() => {
             //dim lights
-
             this.lightFilter.alpha = 0.5;
-            //this.beltContainer.AlphaFilter.alpha = 0.5;
-            //play sound of lights turned off
             this.lightSwitchSound.play();
+            this.clock.startClock();
             //spawn dialog box
-        },
-        1000
-        );
+        }, 1000);
         //dim lights slowly
         //show work is over
         //show Overtime text

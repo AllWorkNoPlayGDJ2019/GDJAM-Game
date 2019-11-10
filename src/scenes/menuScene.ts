@@ -41,7 +41,6 @@ export class menuScene implements gameScene {
 
         playButtonClickable.addCallback(() => {
             this.sceneManager.loadScene('factoryScene');
-            alert('click');
         });
         this.app.stage.addChild(playButton);
         console.log(playButton.width)

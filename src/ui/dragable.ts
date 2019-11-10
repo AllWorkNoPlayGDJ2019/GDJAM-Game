@@ -42,7 +42,6 @@ export class Dragable {
     }
     private onDragMove() {
         if (this.data !== null) {
-            console.log('move');
             const newPosition = this.data.getLocalPosition(this.sprite.parent);
             this.sprite.position.x = newPosition.x;
             this.sprite.position.y = newPosition.y;

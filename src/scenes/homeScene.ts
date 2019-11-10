@@ -21,7 +21,6 @@ export class homeScene implements gameScene {
         background.tint = 0x0000000;
         background.width = this.app.view.width;
         background.height = this.app.view.height;
-        console.log({ w: background.width, h: background.height })
         this.app.stage.addChild(background)
 
         const appWidth = this.app.view.width;
