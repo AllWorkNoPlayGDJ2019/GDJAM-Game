@@ -38,30 +38,30 @@ export class GameStats{
 
     day1: dayStats = {
         moneyGoal: 60,
-        happinessGoal: 6,
-        goodPhoto: "kidInfantGood",
-        badPhoto: "kidInfantBad"
+        happinessGoal: 0,
+        goodPhoto: "day1Happy",
+        badPhoto: "day1Happy"
     };
 
     day2: dayStats = {
         moneyGoal: 60,
         happinessGoal: 12,
-        goodPhoto: "kidElementarySchoolGood",
-        badPhoto: "kidElementarySchoolBad"
+        goodPhoto: "day2Happy",
+        badPhoto: "day2Sad"
     };
 
     day3: dayStats = {
         moneyGoal: 60,
         happinessGoal: 18,
-        goodPhoto: "kidMiddleSchoolGood",
-        badPhoto: "kidMiddleSchoolBad"
+        goodPhoto: "day3Happy",
+        badPhoto: "day3Sad"
     };
 
     day4: dayStats = {
         moneyGoal: 60,
         happinessGoal: 24,
-        goodPhoto: "kidHighSchoolGood",
-        badPhoto: "kidHighSchoolBad"
+        goodPhoto: "day4Happy",
+        badPhoto: "day4Sad"
     };
 
    public readonly daystatList = [
