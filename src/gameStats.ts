@@ -9,7 +9,9 @@ export class GameStats {
     public gameStage = 0;
     public currentDay = new Date(1990, 5, 12, 5, 50, 0, 0);
 
-    public moneyGoal = 100;
+    public get moneyGoal(){
+        return this.daystatList[this.gameStage].moneyGoal;
+    }
 
 
     public advanceDay() {
