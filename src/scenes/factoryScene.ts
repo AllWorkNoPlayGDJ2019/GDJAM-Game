@@ -3,6 +3,7 @@ import { Clock } from '../ui/clock';
 import { AssetManager } from '../assetManager';
 import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
+import { dollKeeper } from './dollKeeper';
 
 
 export class factoryScene implements gameScene {
@@ -50,17 +51,19 @@ export class factoryScene implements gameScene {
         exitSign.position.set(appWidth - exitSign.width, 0);
         this.app.stage.addChild(exitSign);
 
-        const currentMoney = this.gameStats.money;
-        const currentGoal = this.gameStats.moneyGoal;
-        const textBox = new PIXI.Text(currentMoney + "/" + currentGoal, "white");
-        this.app.stage.addChild(textBox);
+        const moneyUpdater = () => {
+            const currentMoney = this.gameStats.money;
+            const currentGoal = this.gameStats.moneyGoal;
+            const textBox = new PIXI.Text(currentMoney + "/" + currentGoal, "white");
+            this.app.stage.addChild(textBox);
+            textBox.position.set(appWidth - exitSign.width - textBox.width, exitSign.height / 4);
+        };
 
         const box = getSprite(this.assetManager.Textures["box"]);
         this.app.stage.addChild(box);
         box.scale.set(0.5, 0.5);
         box.position.set(appWidth - box.width, appHeight - box.height);
 
-        textBox.position.set(appWidth - exitSign.width - textBox.width, exitSign.height / 4);
 
         const clock = new Clock(
             getSprite(this.assetManager.Textures["clockFace"]),
@@ -70,23 +73,19 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(clock.mainContainer);
         clock.mainContainer.position = new PIXI.Point(50, 50);
 
-        const spawnDoll = () => {
-            console.log("spawned doll");
-            const doll = getSprite(this.assetManager.Textures["doll"]);
-            this.app.stage.addChildAt(doll, 7);
-            doll.width = 128;
-            doll.height = 128;
-            doll.position.set(0, 400);
-
-            const intervalId = setInterval(() => {
-                doll.position.set(doll.position.x + 1, doll.position.y);
-                if (doll.position.x > appWidth) {
-                    console.log("killed doll");
-                    this.app.stage.removeChild(doll);
-                    window.clearInterval(intervalId);
-                }
-            })
-        };
-        spawnDoll();
+        const dollkeeper = new dollKeeper(
+            this.app.stage,
+            4,
+            this.assetManager.Textures["doll"],
+            new PIXI.Point(128, 128),
+            [new PIXI.Point(-10, 290),
+            new PIXI.Point(-5, 300),
+            new PIXI.Point(0, 310)],
+            new PIXI.Point(appWidth, 0),
+            200,
+            new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
+            () => { this.gameStats.successfulAction(); moneyUpdater(); }
+        );
+        dollkeeper.startSpawn();
     }
 }
