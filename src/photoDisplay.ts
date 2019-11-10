@@ -34,6 +34,6 @@ export class photoDisplay {
             if (photo.position === photoTargetPosition) {
                 window.clearInterval(photoIntervalID);
             }
-        }, 16)
+        }, 33)
     }
 }
