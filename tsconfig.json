@@ -5,7 +5,7 @@
         "node_modules/pixi.js/pixi.js.d.ts"
     ],
     "compilerOptions": {
-        "module": "commonjs",
+        "module": "es2015",
         "esModuleInterop": true,
         "target": "es6",
         "moduleResolution": "node",
@@ -16,8 +16,5 @@
         "noImplicitReturns": true, /* Report error when not all code paths in function return a value. */
         "noFallthroughCasesInSwitch": true /* Report errors for fallthrough cases in switch statement. */
     },
-    "lib": [
-        "es2015",
-        "DOM"
-    ]
+    "lib": ["es5", "es2015.promise", "dom", "es2015"],
 }

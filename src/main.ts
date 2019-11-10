@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js'
-//import * as factory from './scenes/factory'
 import { factoryScene } from "./scenes/factoryScene";
 import { demoScene } from '../src/scenes/demoScene';
+import { AssetManager } from './assetManager';
+import { GameStats } from './gameStats';
 require('../assets/main.css');
 
 console.log("works");
@@ -11,9 +12,24 @@ const app = new PIXI.Application({
 });
 document.body.appendChild(app.view);
 
-const scenes = {
-    factoryScene: new factoryScene(app),
-    demoScene: new demoScene(app)
-}
+const gameStat = new GameStats();
 
-scenes.demoScene.showScene();
+const assetManager = new AssetManager();
+assetManager.load().then(() => {
+    const scenes = {
+        factoryScene: new factoryScene(app, assetManager,gameStat),
+        demoScene: new demoScene(app)
+    }
+
+    scenes.factoryScene.showScene();
+});
+//requestAnimationFrame( animate );
+//
+//function animate() {
+//
+//    requestAnimationFrame(animate);
+//
+//    // render the stage
+//    app.renderer.render(app.stage);
+//    //setTimeout(animate,1000/2);
+//}
