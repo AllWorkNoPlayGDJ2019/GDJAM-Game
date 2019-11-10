@@ -1,4 +1,6 @@
 import * as PIXI from 'pixi.js'
+import { CreateAudio } from "../createAudio";
+
 export class demoScene implements gameScene {
     constructor(public readonly app: PIXI.Application) {
     }
@@ -34,5 +36,11 @@ export class demoScene implements gameScene {
             // use delta to create frame-independent transform
             container.rotation -= 0.01 * delta;
         });
+
+        // Play audio
+        const crowd = new CreateAudio("tone.mp3")
+        crowd.play();
+        crowd.loop();
+
     }
 }
