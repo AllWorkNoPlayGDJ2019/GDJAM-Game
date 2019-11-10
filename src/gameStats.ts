@@ -37,29 +37,45 @@ export class GameStats{
     }
 
     day1: dayStats = {
-        moneyGoal: 50,
-        happinessGoal: 8,
-        goodPhoto: "kidElementarySchoolGood",
-        badPhoto: "kidMiddleSchoolBad"
+        moneyGoal: 60,
+        happinessGoal: 6,
+        goodPhoto: "kidBabyGood",
+        badPhoto: "kidBabyBad"
     };
 
     day2: dayStats = {
-        moneyGoal: 100,
-        happinessGoal: 16,
+        moneyGoal: 60,
+        happinessGoal: 12,
         goodPhoto: "kidElementarySchoolGood",
-        badPhoto: "kidMiddleSchoolBad"
+        badPhoto: "kidElementarySchoolBad"
     };
 
     day3: dayStats = {
-        moneyGoal: 200,
-        happinessGoal: 32,
-        goodPhoto: "kidElementarySchoolGood",
+        moneyGoal: 60,
+        happinessGoal: 18,
+        goodPhoto: "kidMiddleSchoolGood",
         badPhoto: "kidMiddleSchoolBad"
+    };
+
+    day4: dayStats = {
+        moneyGoal: 60,
+        happinessGoal: 24,
+        goodPhoto: "kidHighSchoolGood",
+        badPhoto: "kidHighSchoolBad"
+    };
+
+    day5: dayStats = {
+        moneyGoal: 60,
+        happinessGoal: 30,
+        goodPhoto: "kidAdultGood",
+        badPhoto: "kidAdultBad",
     };
 
    public readonly daystatList = [
        this.day1,
        this.day2,
-       this.day3
+       this.day3,
+       this.day4,
+       this.day5
    ];
 }
