@@ -36,7 +36,11 @@ export class dollKeeper {
             return next;
         }
         const dollSprite = getSprite(this.dollTexture);
-        this.parent.addChildAt(dollSprite, this.parent.children.length);
+        dollSprite.pivot.set(dollSprite.width / 2, dollSprite.height / 2);
+        if (Math.random() > 0.2) {
+            dollSprite.rotation = Math.PI * Math.random();
+        }
+        this.parent.addChildAt(dollSprite, this.parent.children.length - 1);
 
         const nextPos = getNext();
         const dollObj = new doll(
@@ -52,20 +56,11 @@ export class dollKeeper {
         draggable.addStartCallback(() => { dollObj.interruptMovement(); console.log('callback') });
         draggable.addEndCallback(() => {
             const pos = dollSprite.position;
-            console.log({pos,area:this.successArea,});
             if (this.successArea.contains(pos.x, pos.y)) {
                 this.successAction();
             }
             dollObj.kill();
         });
-
-  //      const intervalId = setInterval(() => {
-  //          dollSprite.position.set(dollSprite.position.x + this.moveSpeed, dollSprite.position.y);
-  //          if (dollSprite.position.x > this.killPoint.x) {
-  //              this.parent.removeChild(dollSprite);
-  //              window.clearInterval(intervalId);
-  //          }
-  //      });
 
         dollSprite.width = this.dollSize.x;
         dollSprite.height = this.dollSize.y;

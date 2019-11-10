@@ -31,7 +31,7 @@ assetManager.load().then(() => {
         factoryScene: new factoryScene(app, assetManager, sceneManager,gameStat),
         demoScene: new demoScene(app),
         menuScene:menuscene,
-        homeScene: new homeScene(app, assetManager, gameStat, photoDisplayer)
+        homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer)
     };
     sceneManager.loadScene("menuScene");
     //scenes.factoryScene.showScene();
