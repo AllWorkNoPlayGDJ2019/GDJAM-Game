@@ -5,7 +5,6 @@ import { AssetManager } from './assetManager';
 import { GameStats } from './gameStats';
 require('../assets/main.css');
 
-console.log("works");
 const app = new PIXI.Application({
     width: window.innerWidth, height: window.innerHeight,
     backgroundColor: 0x1099bb, resolution: window.devicePixelRatio || 1,

@@ -1,7 +1,7 @@
 export class GameStats{
 
     public readonly itemValue =0.5;
-    public  money;
+    public  money =0;
     public  childHappiness=0;
     public today = new Date();
     public moneyGoal=100;
