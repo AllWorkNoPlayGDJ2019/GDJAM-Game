@@ -23,6 +23,9 @@ export class Clock {
         this.minutePointer.pivot.set(this.minutePointer.width / 2, this.minutePointer.height / 2);
         this.minutePointer.position.set(this.scaleFactor * this.minutePointer.width / 2, this.scaleFactor * this.minutePointer.height / 2);
         this.minutePointer.scale.set(this.scaleFactor, this.scaleFactor);
+
+        this.time.setUTCHours(5, 50, 0, 0);
+
     }
 
 
@@ -62,22 +65,23 @@ export class Clock {
         return this.time;
     }
 
-    public startClock(startTime: Date) {
+    public startClock() {
         console.log("started time");
-        this.time = startTime;
+        //this.time = startTime;
         this.timerId = window.setInterval(() => {
-            this.time.setMinutes(this.time.getMinutes() + 5);
-            if (this.time.getHours() == 6 && this.time.getMinutes() == 0) {
+            this.time.setMinutes(this.time.getUTCMinutes() + 2, this.time.getSeconds() + 30);
+           // console.log(this.time.getUTCHours() + ":" + this.time.getUTCMinutes());
+            if (this.time.getUTCHours() == 6 && this.time.getUTCMinutes() == 0) {
                 this.workStartCallback.forEach(x => x());
             }
-            if (this.time.getHours() == 18 && this.time.getMinutes() == 0) {
+            if (this.time.getUTCHours() == 18 && this.time.getUTCMinutes() == 0) {
                 this.workEndCallbacks.forEach(x => x());
             }
-            if (this.time.getHours() == 23 && this.time.getMinutes() == 55) {
+            if (this.time.getUTCHours() == 23 && this.time.getUTCMinutes() == 55) {
                 this.endofDayCallbacks.forEach(x => x());
             }
-            this.displayTime(this.time.getHours(), this.time.getMinutes());
-        }, 1000);
+            this.displayTime(this.time.getUTCHours(), this.time.getUTCMinutes());
+        }, 150);
     }
     public stopClock() {
         console.log("stopped time");
