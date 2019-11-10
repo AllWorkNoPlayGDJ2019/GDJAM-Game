@@ -6,6 +6,7 @@ module.exports = {
     entry: "./src/main.ts", //relative to root of the application
     devServer: {
     },
+    devtool:false,
     output: {
         filename: 'app.bundle.js',
         //   path: path.resolve(__dirname, 'dist'),
