@@ -52,9 +52,8 @@ export class factoryScene implements gameScene {
         const playButtonClickable = new Clickable(playButton);
 
         playButtonClickable.addCallback(() => {
-            this.sceneManager.loadScene('homeScene');
             this.gameStats.finishDay(this.clock.getTime());
-            alert('click');
+            this.sceneManager.loadScene('homeScene');
         });
         playButton.interactive = true;
         playButton.zIndex = Infinity;

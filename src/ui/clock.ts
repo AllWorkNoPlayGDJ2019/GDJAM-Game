@@ -32,7 +32,7 @@ export class Clock {
 
     public startClock(startTime:Date) {
         this.time = startTime;
-        window.setInterval(() => {
+        this.timerId = window.setInterval(() => {
             this.time.setMinutes(this.time.getMinutes() + 5);
             this.displayTime(this.time.getHours(), this.time.getMinutes());
         }, 1000);
