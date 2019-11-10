@@ -104,7 +104,7 @@ export class factoryScene implements gameScene {
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
         this.clock.addEndofDayCallbacks(() => this.stayAtWork());
-        this.clock.addWorkEndCallback(() => this.workEnds());
+        this.clock.addWorkEndCallback(() => this.overTimeBegins());
         this.clock.addWorkStartCallback(() => this.workBegins());
 
         this.clock.startClock(this.gameStats.currentDay);
@@ -126,15 +126,11 @@ export class factoryScene implements gameScene {
             () => { this.gameStats.successfulAction(); moneyUpdater(); }
         );
 
-        this.workBegins();
         this.app.stage.addChildAt(box, this.app.stage.children.length);
 
     }
 
-    private workBegins() {
-    }
-    private workEnds() {
-    }
+
     private stayAtWork() {
     }
 
@@ -143,7 +139,7 @@ export class factoryScene implements gameScene {
         this.app.stage.removeChild(this.app.stage);
 
         this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
-        this.clock.removeWorkEndCallbacks(() => this.workEnds());
+        this.clock.removeWorkEndCallbacks(() => this.overTimeBegins());
         this.clock.removeStartofDayCallbacks(() => this.workBegins());
     }
 
