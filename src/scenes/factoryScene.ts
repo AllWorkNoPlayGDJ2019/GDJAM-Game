@@ -15,17 +15,47 @@ export class factoryScene implements gameScene {
         public readonly gameStats: GameStats) {
     }
 
+
+    
+
     public background: PIXI.Sprite;
     public belt: PIXI.Sprite;
     public beltContainer: PIXI.Container;
     public dollkeeper: dollKeeper;
-
+  
+    public clockSound = new CreateAudio("clock.mp3");
+    public conveyorSound = new CreateAudio("conveyor.mp3");
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
+  
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
 
     private textBox: PIXI.Text;
+
+    public shadowSpritePaths1:string[] = [
+        "assets/shadowWorkerFrames/shadowsA1.png",  // we're only using the first of each since animation not working, ie. A1, B1, C1
+        "assets/shadowWorkerFrames/shadowsA2.png",
+        "assets/shadowWorkerFrames/shadowsA3.png",
+        "assets/shadowWorkerFrames/shadowsA4.png",
+        "assets/shadowWorkerFrames/shadowsA5.png"
+    ];
+
+    public shadowSpritePaths2:string[] = new Array(
+        "assets/shadowWorkerFrames/shadowsB1.png",
+        "assets/shadowWorkerFrames/shadowsB2.png",
+        "assets/shadowWorkerFrames/shadowsB3.png",
+        "assets/shadowWorkerFrames/shadowsB4.png",
+        "assets/shadowWorkerFrames/shadowsB5.png"
+    );
+
+    public shadowSpritePaths3:string[] = new Array(
+        "assets/shadowWorkerFrames/shadowsC1.png",
+        "assets/shadowWorkerFrames/shadowsC2.png",
+        "assets/shadowWorkerFrames/shadowsC3.png",
+        "assets/shadowWorkerFrames/shadowsC4.png",
+        "assets/shadowWorkerFrames/shadowsC5.png"
+    );
 
     public showScene() {
 
@@ -54,6 +84,15 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(this.beltContainer);
         this.beltContainer.filters = [this.lightFilter];
 
+        // Play looping audios
+        this.conveyorSound.play()
+        this.conveyorSound.loop()
+        this.clockSound.play()
+        this.clockSound.loop()
+
+        // Spawn shadows
+        this.spawnShadows(3);
+
         const factorySprite = getSprite(this.assetManager.Textures["belt"]);
 
         factorySprite.width = appWidth;
@@ -61,7 +100,7 @@ export class factoryScene implements gameScene {
         const playButton = getSprite(this.assetManager.Textures["exitSign"]);
         const playButtonClickable = new Clickable(playButton);
 
-        playButtonClickable.addCallback(() => {
+        playButtonClickable.addCallback(() => {      
             this.gameStats.finishDay(this.clock.getTime());
             this.sceneManager.loadScene('homeScene');
         });
@@ -130,10 +169,29 @@ export class factoryScene implements gameScene {
         console.log("stay at factory");
     }
 
+    public spawnShadows(rowCount: number) {
+
+        for (let rows = rowCount; rows > 0; rows--) {
+            let shadowSprite;
+            if (rows === 1) {
+                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths1[0]);
+            } else if (rows === 2) {
+                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths2[0]);
+            } else {
+                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths3[0]);
+            }
+            shadowSprite.position.set(0, 0 - this.app.view.height/11); // manual spacing fix
+            this.app.stage.addChild(shadowSprite);  
+        }
+            
+    }
+
     public removeScene() {
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
         this.app.stage.removeChild(this.textBox);
+        this.conveyorSound.stop();   // Stop audio
+        this.clockSound.stop();   
         this.textBox = undefined;
 
         this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
