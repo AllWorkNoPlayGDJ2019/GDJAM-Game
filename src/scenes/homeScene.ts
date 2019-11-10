@@ -4,6 +4,7 @@ import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
 import { photoDisplay } from '../photoDisplay';
 import { SceneManager } from './sceneManager';
+import { CreateAudio } from '../createAudio';
 
 export class homeScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
@@ -38,14 +39,20 @@ export class homeScene implements gameScene {
 
         this.photoDisplayer.chooseAndDisplayPhoto();
 
+        // Audio
+        let roomAmbience = new CreateAudio("roomAmbience.mp3");
+        roomAmbience.play();
+        roomAmbience.loop();
 
         const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
         const exitButtonClickable = new Clickable(exitSign);
         exitButtonClickable.addCallback(() => {
             this.sceneManager.loadScene('factoryScene');
+            roomAmbience.stop();
         });
         this.app.stage.addChild(exitSign);
         exitSign.position.set(appWidth - exitSign.width, 0);
+
 
     }
 
