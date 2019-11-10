@@ -1,6 +1,35 @@
-body, html , canvas{
+body, html ,h1, canvas{
     margin: 0;
     border:0;
     padding: 0;
     display: block;
+}
+html{
+    background: rgb(0, 0, 0);
+}
+h1{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    text-align:center;
+    background-color: rgba(33, 33, 33, .3);
+    align-items: center;
+    z-index: -999;
+    overflow: hidden;
+}
+canvas{
+    height: 100vh;
+    widows: 100vw;
+    overflow: hidden;
+    position: absolute;
+    left: 0;
+    right:0;
+    top:0;
+    bottom:0;
+}
+h1:not(){
+z-index: 999;
 }

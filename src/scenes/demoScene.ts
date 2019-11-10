@@ -4,7 +4,10 @@ import { CreateAudio } from "../createAudio";
 export class demoScene implements gameScene {
     constructor(public readonly app: PIXI.Application) {
     }
-
+    
+    public removeScene() {
+        this.app.stage.removeChild(this.app.stage);
+    }
     public showScene() {
         const container = new PIXI.Container();
 
@@ -43,4 +46,6 @@ export class demoScene implements gameScene {
         crowd.loop();
 
     }
+
+
 }

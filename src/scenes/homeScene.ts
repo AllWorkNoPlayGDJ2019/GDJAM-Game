@@ -13,12 +13,12 @@ export class homeScene implements gameScene {
 
     public showScene() {
         this.app.stage = new PIXI.Container();
-        this.app.stage.filterArea = new PIXI.Rectangle(0, 0, this.app.view.width, this.app.view.height);
 
         const background = new PIXI.Sprite(PIXI.Texture.WHITE);
         background.tint = 0x0000000;
         background.width = this.app.view.width;
         background.height = this.app.view.height;
+        console.log({w:background.width,h:background.height})
         this.app.stage.addChild(background)
 
         const appWidth = this.app.view.width;
@@ -42,5 +42,9 @@ export class homeScene implements gameScene {
         exitSign.position.set(appWidth - exitSign.width, 0);
         this.app.stage.addChild(exitSign);
         
+    }
+
+    public removeScene() {
+        this.app.stage.removeChild(this.app.stage);
     }
 }
