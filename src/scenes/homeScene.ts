@@ -34,14 +34,15 @@ export class homeScene implements gameScene {
         home.width = appWidth;
         home.height = appHeight;
 
-        this.photoDisplayer.spawnPhoto("kidMiddleSchoolBad");
+        this.photoDisplayer.chooseAndDisplayPhoto();
 
+        
         const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
         const exitButtonClickable = new Clickable(exitSign);
         exitButtonClickable.addCallback(() => alert('click'));
         exitSign.position.set(appWidth - exitSign.width, 0);
         this.app.stage.addChild(exitSign);
-        
+
     }
 
     public removeScene() {
