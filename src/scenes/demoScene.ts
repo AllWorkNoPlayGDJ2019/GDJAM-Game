@@ -38,7 +38,7 @@ export class demoScene implements gameScene {
         });
 
         // Play audio
-        const crowd = new CreateAudio("tone.mp3")
+        const crowd = new CreateAudio("crowd.mp3");
         crowd.play();
         crowd.loop();
 

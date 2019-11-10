@@ -12,30 +12,30 @@ export class CreateAudio {
         soundFile: string
     )
     {
-        this.audio.src = "./assets/audio/" + soundFile
-        this.audio.load()
-        this.audio.play()
+        this.audio.src = "./assets/audio/" + soundFile;
+        this.audio.load();
+        this.audio.play();
     }
 
     // Play audio
     play() {
-        this.audio.play()
+        this.audio.play();
     }
 
     // Play audio (same thing)
     start() {
-        this.audio.play()
+        this.audio.play();
     }
 
     // Stop audio
     stop() {
-        this.audio.pause()
-        this.audio.currentTime = 0
+        this.audio.pause();
+        this.audio.currentTime = 0;
     }
 
     // Loop audio
     loop() {
-        this.audio.loop = true
+        this.audio.loop = true;
     }
 
 
