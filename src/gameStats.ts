@@ -1,4 +1,5 @@
 import { dayStats } from './dayStats'
+import { factoryScene } from './scenes/factoryScene';
 
 export class GameStats {
 

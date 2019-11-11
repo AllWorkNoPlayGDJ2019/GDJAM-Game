@@ -37,6 +37,7 @@ export class factoryScene implements gameScene {
     public spriteAnim; 
 
     private textBox: PIXI.Text;
+    private box: PIXI.Sprite;
 
     public shadowSpritePaths1: string[] = [
         "assets/shadowWorkerFrames/shadowsA1.png",  // we're only using the first of each since animation not working, ie. A1, B1, C1
@@ -114,7 +115,7 @@ export class factoryScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth-playButton.width,0);
+        playButton.position.set(appWidth-playButton.width, 0.3 * appHeight);
 
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
@@ -131,14 +132,16 @@ export class factoryScene implements gameScene {
                 const style = new PIXI.TextStyle({
                     "fill": "#EEEE00",
                     "fontFamily": "Courier New",
-                    "fontWeight": "bold"
+                    "fontWeight": "bold",
+                    "fontSize": 32
                 });
-                this.textBox = new PIXI.Text(currentMoney + "/" + currentGoal, style);
+                this.textBox = new PIXI.Text("money", style);
                 this.app.stage.addChild(this.textBox);
                 this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.87);
             }
-            this.textBox.text = currentMoney + "/" + currentGoal;
+            this.textBox.text = currentMoney.toFixed(1) + "/" + currentGoal + '¥';
         };
+
         const moneyAnimation = () => {
             const addStyle = new PIXI.TextStyle(
                 {
@@ -167,9 +170,11 @@ export class factoryScene implements gameScene {
 
         moneyUpdater();
 
-        const box = getSprite(this.assetManager.Textures["box"]);
-        box.scale.set(0.5, 0.5);
-        box.position.set(appWidth - box.width, appHeight - 0.75 * box.height);
+        this.box = getSprite(this.assetManager.Textures["box"]);
+        this.box.scale.set(0.5, 0.5);
+        this.box.pivot.set(this.box.width * 0.5, this.box.height * 0.5);
+        this.box.position.set(appWidth - this.box.width, appHeight - 0.75 * this.box.height*0.5);
+
 
         this.clock = new Clock(
             getSprite(this.assetManager.Textures["clockFace"]),
@@ -182,7 +187,7 @@ export class factoryScene implements gameScene {
         this.clock.addWorkStartCallback(() => this.workBegins());
 
         this.app.stage.addChild(this.clock.mainContainer);
-        this.clock.mainContainer.position = new PIXI.Point(50, 50);
+        this.clock.mainContainer.position = new PIXI.Point(50, appHeight*0.2);
         this.lightFilter.alpha = 0.5;
 
       const dollSize = 128;
@@ -191,20 +196,21 @@ export class factoryScene implements gameScene {
             4,
             this.assetManager.Textures["doll"],
             new PIXI.Point(dollSize, dollSize),
-            [new PIXI.Point(-100, appHeight * 0.75 - 0.5 * dollSize),
-            new PIXI.Point(-80, appHeight * 0.775 - 0.5 * dollSize),
-            new PIXI.Point(-60, appHeight * 0.8 - 0.5 * dollSize)],
+            [new PIXI.Point(-220, appHeight * 0.75 ),
+            new PIXI.Point(-180, appHeight * 0.775 ),
+            new PIXI.Point(-140, appHeight * 0.8   )],
             new PIXI.Point(appWidth, 0),
             200,
-            new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
+            new PIXI.Rectangle(appWidth - this.box.width, appHeight - this.box.height, this.box.width, this.box.height),
             () => {
                 this.gameStats.successfulAction();
                 moneyUpdater();
                 moneyAnimation();
+                this.boxAnimation();
             }
         );
 
-        this.app.stage.addChildAt(box, this.app.stage.children.length);
+        this.app.stage.addChildAt(this.box, this.app.stage.children.length);
 
     }
 
@@ -332,5 +338,17 @@ export class factoryScene implements gameScene {
         //show work is over
         //show Overtime text
         //
+    }
+
+    private boxAnimation() {
+        const startTime = new Date().getTime();
+        const interval = setInterval(() => {
+            this.box.rotation = Math.random() * 0.1;
+
+            if (new Date().getTime() - startTime > 200) {
+                window.clearInterval(interval);
+                this.box.rotation = 0;
+            }
+        }, 60)
     }
 }
