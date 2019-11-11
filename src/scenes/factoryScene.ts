@@ -193,6 +193,12 @@ export class factoryScene implements gameScene {
 
     private stayAtWork() {
         console.log("stay at factory");
+        
+        this.photoDisplayer.spawnClickablePrompt("overtime", [()=>{
+            this.gameStats.finishDay(this.clock.getTime());
+            this.sceneManager.loadScene('homeScene');
+        }]
+        );
     }
 
     public spawnShadows(rowCount: number) {
@@ -301,7 +307,6 @@ export class factoryScene implements gameScene {
             this.lightFilter.alpha = 0.5;
             this.lightSwitchSound.play();
             //spawn dialog box
-            this.photoDisplayer.spawnClickablePrompt("textBoxSample");
             this.clock.startClock();
             //spawn dialog box
         }, 1000);
