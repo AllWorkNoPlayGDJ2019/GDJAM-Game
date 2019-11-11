@@ -14,28 +14,28 @@ export class factoryScene implements gameScene {
         public readonly assetManager: AssetManager,
         private readonly sceneManager: SceneManager,
         public readonly gameStats: GameStats,
-        public readonly photoDisplayer: photoDisplay){
+        public readonly photoDisplayer: photoDisplay) {
     }
 
 
-    
+
 
     public background: PIXI.Sprite;
     public belt: PIXI.Sprite;
     public beltContainer: PIXI.Container;
     public dollkeeper: dollKeeper;
-  
+
     public clockSound = new CreateAudio("clock.mp3");
     public conveyorSound = new CreateAudio("conveyor.mp3");
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
-  
+
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
 
     private textBox: PIXI.Text;
 
-    public shadowSpritePaths1:string[] = [
+    public shadowSpritePaths1: string[] = [
         "assets/shadowWorkerFrames/shadowsA1.png",  // we're only using the first of each since animation not working, ie. A1, B1, C1
         "assets/shadowWorkerFrames/shadowsA2.png",
         "assets/shadowWorkerFrames/shadowsA3.png",
@@ -43,7 +43,7 @@ export class factoryScene implements gameScene {
         "assets/shadowWorkerFrames/shadowsA5.png"
     ];
 
-    public shadowSpritePaths2:string[] = [
+    public shadowSpritePaths2: string[] = [
         "assets/shadowWorkerFrames/shadowsB1.png",
         "assets/shadowWorkerFrames/shadowsB2.png",
         "assets/shadowWorkerFrames/shadowsB3.png",
@@ -51,7 +51,7 @@ export class factoryScene implements gameScene {
         "assets/shadowWorkerFrames/shadowsB5.png"
     ];
 
-    public shadowSpritePaths3:string[] = [
+    public shadowSpritePaths3: string[] = [
         "assets/shadowWorkerFrames/shadowsC1.png",
         "assets/shadowWorkerFrames/shadowsC2.png",
         "assets/shadowWorkerFrames/shadowsC3.png",
@@ -102,7 +102,7 @@ export class factoryScene implements gameScene {
         const playButton = getSprite(this.assetManager.Textures["exitSign"]);
         const playButtonClickable = new Clickable(playButton);
 
-        playButtonClickable.addCallback(() => {      
+        playButtonClickable.addCallback(() => {
             this.gameStats.finishDay(this.clock.getTime());
             this.sceneManager.loadScene('homeScene');
         });
@@ -128,6 +128,19 @@ export class factoryScene implements gameScene {
             }
             this.textBox.text = currentMoney + "/" + currentGoal;
         };
+        const moneyAnimation = () => {
+            const addStyle = new PIXI.TextStyle(
+                {
+                    "fill": "#d20000",
+                    "fontFamily": "Courier New",
+                    "fontWeight": "bold"
+                });
+            const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(),addStyle);
+            this.app.stage.addChild(addMoneyBox);
+            addMoneyBox.position.set(this.textBox.position.x - addMoneyBox.width, this.textBox.position.y + this.textBox.height);
+            setTimeout(()=> this.app.stage.removeChild(addMoneyBox),100);
+        };
+
         moneyUpdater();
 
         const box = getSprite(this.assetManager.Textures["box"]);
@@ -160,7 +173,11 @@ export class factoryScene implements gameScene {
             new PIXI.Point(appWidth, 0),
             200,
             new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
-            () => { this.gameStats.successfulAction(); moneyUpdater(); }
+            () => {
+                this.gameStats.successfulAction();
+                moneyUpdater();
+                moneyAnimation();
+            }
         );
 
         this.app.stage.addChildAt(box, this.app.stage.children.length);
@@ -186,24 +203,24 @@ export class factoryScene implements gameScene {
             let shadowPos = shadowSprite.position;
             let shadowTarg = new PIXI.Point(0, 0);
 
-            shadowSprite.position.set(0-this.app.view.width, 0); // manual spacing fix
+            shadowSprite.position.set(0 - this.app.view.width, 0); // manual spacing fix
             shadowSprite.width = this.app.view.width;
             shadowSprite.height = this.app.view.height;
 
-            this.app.stage.addChild(shadowSprite);  
+            this.app.stage.addChild(shadowSprite);
 
-            
+
 
             const spriteID = setInterval(() => {
                 shadowSprite.position = utilMath.lerpPoint(shadowPos, shadowTarg, 0.025);
-    
+
                 if (shadowPos.position === shadowTarg) {
                     window.clearInterval(spriteID);
                 }
             }, 33)
 
         }
-            
+
     }
 
     public removeScene() {
@@ -211,7 +228,7 @@ export class factoryScene implements gameScene {
         this.app.stage.removeChild(this.app.stage);
         this.app.stage.removeChild(this.textBox);
         this.conveyorSound.stop();   // Stop audio
-        this.clockSound.stop();   
+        this.clockSound.stop();
         this.textBox = undefined;
 
         this.clock.removeEndofDayCallbacks(() => this.stayAtWork());
