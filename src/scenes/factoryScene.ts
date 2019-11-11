@@ -79,7 +79,7 @@ export class factoryScene implements gameScene {
             return PIXI.Sprite.from(spriteSrc);
         };
 
-        const belt = getSprite(this.assetManager.Textures["beltbackground"]);
+        const belt = getSprite(this.assetManager.Textures["factory"]);
         this.app.stage.addChild(belt);
         this.beltContainer = new PIXI.Container();
         this.beltContainer.addChild(belt);
@@ -119,32 +119,50 @@ export class factoryScene implements gameScene {
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
 
+        const moneyPocket = getSprite("redPocket");
+        this.app.stage.addChild(moneyPocket);
+        moneyPocket.pivot.set(moneyPocket.width / 2, moneyPocket.height / 2);
+        moneyPocket.position.set(appWidth / 2, appHeight * 0.88);
+
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
             const currentGoal =300; this.gameStats.moneyGoal;
             if (this.textBox === undefined) {
                 const style = new PIXI.TextStyle({
-                    "fill": "#d20000",
+                    "fill": "#EEEE00",
                     "fontFamily": "Courier New",
                     "fontWeight": "bold"
                 });
                 this.textBox = new PIXI.Text(currentMoney + "/" + currentGoal, style);
                 this.app.stage.addChild(this.textBox);
-                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.2);
+                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.87);
             }
             this.textBox.text = currentMoney + "/" + currentGoal;
         };
         const moneyAnimation = () => {
             const addStyle = new PIXI.TextStyle(
                 {
-                    "fill": "#d20000",
+                    "fill": "#EEEE00",
                     "fontFamily": "Courier New",
                     "fontWeight": "bold"
                 });
             const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(),addStyle);
             this.app.stage.addChild(addMoneyBox);
-            addMoneyBox.position.set(this.textBox.position.x - addMoneyBox.width, this.textBox.position.y + this.textBox.height);
-            setTimeout(()=> this.app.stage.removeChild(addMoneyBox),100);
+            addMoneyBox.position.set(this.textBox.position.x, this.textBox.position.y - this.textBox.height);
+            
+
+           const targetY = this.textBox.position.y - appHeight*0.15;
+
+            const startTime = new Date().getTime();
+            const photoIntervalID = setInterval(() => {
+                addMoneyBox.position.y = utilMath.lerp(addMoneyBox.position.y, targetY, 0.02);
+                addMoneyBox.alpha = utilMath.lerp(addMoneyBox.alpha, 0.0, 0.02);
+    
+                if (new Date().getTime() - startTime > 200) {
+                    window.clearInterval(photoIntervalID);
+                    this.app.stage.removeChild(addMoneyBox)
+                }
+            }, 33)
         };
 
         moneyUpdater();

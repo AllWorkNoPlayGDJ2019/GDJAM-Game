@@ -33,6 +33,9 @@ export class AssetManager {
         this.AssetLocations["startPrompt"]="assets/start_scene.png";
         this.AssetLocations["toWork"]="assets/go_to_work.png";
         this.AssetLocations["overtime"]="assets/overtime.png";
+
+        this.AssetLocations["redPocket"]="assets/red_pocket.png";
+        
         
     }
 
