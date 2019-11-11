@@ -16,9 +16,10 @@ export class photoDisplay {
 
     public chooseAndDisplayPhoto() {
         const todayStat = this.gameStats.daystatList[this.gameStats.gameStage];
-        if (this.gameStats.childHappiness > todayStat.happinessGoal) {
-            this.spawnPhoto(todayStat.goodPhoto);
-        }
+        const selectedPhoto = (this.gameStats.childHappiness > todayStat.happinessGoal) ?
+            todayStat.goodPhoto : todayStat.badPhoto;
+        this.gameStats.selectImage(selectedPhoto);
+        this.spawnPhoto(selectedPhoto);
     }
 
     public spawnPhoto(assetName: string) {

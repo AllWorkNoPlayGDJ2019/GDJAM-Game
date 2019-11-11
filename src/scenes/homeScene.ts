@@ -4,6 +4,7 @@ import { Clickable } from '../ui/clickable';
 import { GameStats } from '../gameStats';
 import { photoDisplay } from '../photoDisplay';
 import { SceneManager } from './sceneManager';
+import { CreateAudio } from '../createAudio';
 
 export class homeScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
@@ -20,7 +21,6 @@ export class homeScene implements gameScene {
         background.tint = 0x0000000;
         background.width = this.app.view.width;
         background.height = this.app.view.height;
-        console.log({ w: background.width, h: background.height })
         this.app.stage.addChild(background)
 
         const appWidth = this.app.view.width;
@@ -36,7 +36,7 @@ export class homeScene implements gameScene {
         home.width = appWidth;
         home.height = appHeight;
 
-        this.photoDisplayer.spawnClickablePrompt("textBoxSample", [
+   /*     this.photoDisplayer.spawnClickablePrompt("textBoxSample", [
             () => {
                 const exitSign = PIXI.Sprite.from(this.assetManager.Textures["exitSign"]);
                 const exitButtonClickable = new Clickable(exitSign);
@@ -50,6 +50,24 @@ export class homeScene implements gameScene {
                 this.photoDisplayer.chooseAndDisplayPhoto()
             }
         ]);
+      */
+        this.photoDisplayer.chooseAndDisplayPhoto();
+
+        // Audio
+        let roomAmbience = new CreateAudio("roomAmbience.mp3");
+        roomAmbience.play();
+        roomAmbience.loop();
+
+        const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
+        const exitButtonClickable = new Clickable(exitSign);
+        exitButtonClickable.addCallback(() => {
+            this.sceneManager.loadScene('factoryScene');
+            roomAmbience.stop();
+        });
+        this.app.stage.addChild(exitSign);
+        exitSign.position.set(appWidth - exitSign.width, 0);
+
+
     }
 
     public removeScene() {

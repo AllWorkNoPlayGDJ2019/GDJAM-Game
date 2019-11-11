@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import { Dragable } from "../ui/dragable";
 import { doll } from "./doll";
+import { CreateAudio } from '../createAudio';
 
 export class dollKeeper {
     constructor(
@@ -52,12 +53,15 @@ export class dollKeeper {
         dollObj.move(new PIXI.Point(dollSprite.position.x, dollSprite.position.y));
         this.dolls.push(dollObj);
 
+        const dropSound = new CreateAudio("drop-item.mp3")
+
         const draggable = new Dragable(dollSprite);
         draggable.addStartCallback(() => { dollObj.interruptMovement(); console.log('callback') });
         draggable.addEndCallback(() => {
             const pos = dollSprite.position;
             if (this.successArea.contains(pos.x, pos.y)) {
                 this.successAction();
+                dropSound.play();
             }
             dollObj.kill();
         });
