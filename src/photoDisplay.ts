@@ -22,14 +22,13 @@ export class photoDisplay {
         this.spawnPhoto(selectedPhoto);
     }
 
-    public spawnPhoto(assetName: string) {
+    public spawnPhoto(assetName: string)  : PIXI.Sprite {
         const photo = PIXI.Sprite.from(this.assetManager.Textures[assetName]);
         this.app.stage.addChild(photo);
         photo.position.set(this.app.view.width / 2, 0);
         photo.pivot.set(photo.width / 2, photo.height / 2);
         photo.scale.x = 0.9;
         photo.scale.y = 0.9;
-
 
         const dragBehaviour = new Dragable(photo);
         dragBehaviour.addStartCallback(() => {
@@ -41,14 +40,66 @@ export class photoDisplay {
         const photoTargetPosition = new PIXI.Point(this.app.view.width / 2, this.app.view.height / 2);
         const photoTargetRotation = Math.random() * angleVariance - angleVariance / 2;
 
+        const startTime = new Date().getTime();
         const photoIntervalID = setInterval(() => {
             photo.position = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
             photo.rotation = utilMath.lerp(photo.rotation, photoTargetRotation, 0.015);
 
-            if (photo.position === photoTargetPosition) {
+            if (new Date().getTime() - startTime > 2000) {
                 window.clearInterval(photoIntervalID);
             }
         }, 33)
+
+        return photo;
+    }
+
+    public spawnPhotoDoubleSided(frontSideName: string, backSideName: string){
+        const photo = PIXI.Sprite.from(this.assetManager.Textures[frontSideName]);
+        this.app.stage.addChild(photo);
+        photo.pivot.set(photo.width / 2, photo.height / 2);
+        photo.position.set(this.app.view.width / 2, this.app.view.height/2);
+
+        const angleVariance = 0.9;
+        const photoTargetPosition = new PIXI.Point(this.app.view.width / 2, this.app.view.height / 2);
+        const photoTargetRotation = Math.random() * angleVariance - angleVariance / 2;
+
+        const startTime = new Date().getTime();
+        
+        const photoIntervalID = setInterval(() => {
+            photo.position = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
+            photo.rotation = utilMath.lerp(photo.rotation, photoTargetRotation, 0.015);
+
+            if (new Date().getTime() - startTime > 2000) {
+                window.clearInterval(photoIntervalID);
+            }
+        }, 33)
+
+
+        const dragBehaviour = new Dragable(photo);
+        dragBehaviour.addStartCallback(() => {
+            this.photoSound.stop();
+            this.photoSound.play();
+        });
+
+        // backside
+        const backSide = PIXI.Sprite.from(this.assetManager.Textures[backSideName]);
+        photo.addChild(backSide);
+        //backSide.pivot.set(photo.width / 2, photo.height / 2);
+        //backSide.position.set(this.app.view.width / 2, 0);
+        backSide.visible = false;
+        backSide.zIndex = 999999;
+
+        const clickable = new Clickable(photo);
+        clickable.addCallback(()=>
+        {
+            if(backSide.visible)
+            {
+                backSide.visible = false;
+            } else 
+            {
+                backSide.visible = true;
+            }
+        });
     }
 
     public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  {
