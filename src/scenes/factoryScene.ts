@@ -30,8 +30,11 @@ export class factoryScene implements gameScene {
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
 
+   public crowdSound = new CreateAudio("crowd.mp3");
+
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
+    public spriteAnim; 
 
     private textBox: PIXI.Text;
 
@@ -87,10 +90,12 @@ export class factoryScene implements gameScene {
         this.beltContainer.filters = [this.lightFilter];
 
         // Play looping audios
-        this.conveyorSound.play()
-        this.conveyorSound.loop()
-        this.clockSound.play()
-        this.clockSound.loop()
+        this.conveyorSound.play();
+        this.conveyorSound.loop();
+        this.clockSound.play();
+        this.clockSound.loop();
+        this.crowdSound.play();
+        this.crowdSound.loop();
 
         // Spawn shadows
         this.spawnShadows(3);
@@ -109,7 +114,8 @@ export class factoryScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth - playButton.width, 0);
+        playButton.position.set(appWidth-playButton.width*1.1,0+this.app.view.height*0.175);
+
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
 
@@ -161,7 +167,7 @@ export class factoryScene implements gameScene {
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
         this.lightFilter.alpha = 0.5;
 
-        const dollSize = 128;
+      const dollSize = 128;
         this.dollkeeper = new dollKeeper(
             this.app.stage,
             4,
@@ -200,8 +206,8 @@ export class factoryScene implements gameScene {
             } else {
                 shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths3[0]);
             }
-            let shadowPos = shadowSprite.position;
-            let shadowTarg = new PIXI.Point(0, 0);
+            const shadowPos = shadowSprite.position;
+            const shadowTarg = new PIXI.Point(0, 0);
 
             shadowSprite.position.set(0 - this.app.view.width, 0); // manual spacing fix
             shadowSprite.width = this.app.view.width;
@@ -211,11 +217,14 @@ export class factoryScene implements gameScene {
 
 
 
+            let intervalCount = 0;
             const spriteID = setInterval(() => {
-                shadowSprite.position = utilMath.lerpPoint(shadowPos, shadowTarg, 0.025);
-
-                if (shadowPos.position === shadowTarg) {
+                intervalCount++;
+                shadowSprite.position = utilMath.lerpPoint(shadowPos, shadowTarg, 0.03);
+                if (shadowPos.position === shadowTarg || intervalCount >= 150) {
+                    console.log("done");
                     window.clearInterval(spriteID);
+                    this.animateWorkers(shadowSprite);
                 }
             }, 33)
 
@@ -223,7 +232,41 @@ export class factoryScene implements gameScene {
 
     }
 
+    public animateWorkers(shadowSprite :any) {
+        let interval = 0;
+        let direction = "up"; // workers move up and down while working, starting with up
+
+        this.spriteAnim = setInterval(() => {
+            interval = interval + 1;
+
+            // switch directions each 5 animation frames
+            if (interval > 5) { 
+                interval = 0;
+                if (direction === "up")
+                    direction = "down";
+                else if (direction === "down")
+                    direction = "up";
+            }
+            
+            // set lerp targets
+            const shadowTargetUp = new PIXI.Point(0, 0 + this.app.view.height*0.03);
+            const shadowTargetDown = new PIXI.Point(0, 0 - this.app.view.height*0.03);
+
+            // move up or down
+            if (direction === "up") {
+                shadowSprite.position = utilMath.lerpPoint(shadowSprite.position, shadowTargetUp, 0.03);
+            } else {
+                shadowSprite.position = utilMath.lerpPoint(shadowSprite.position, shadowTargetDown, 0.03);
+            }
+
+        }, 100)
+    }
+
     public removeScene() {
+        this.crowdSound.stop();
+        this.conveyorSound.stop();
+        this.clockSound.stop();
+        window.clearInterval(this.spriteAnim);
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
         this.app.stage.removeChild(this.textBox);
@@ -250,7 +293,9 @@ export class factoryScene implements gameScene {
     public overTimeBegins() {
         //play sound
         this.workBuzzerSound.play();
+        this.crowdSound.stop();
         this.clock.stopClock();
+
         setTimeout(() => {
             //dim lights
             this.lightFilter.alpha = 0.5;
