@@ -51,7 +51,15 @@ export class homeScene implements gameScene {
             }
         ]);
       */
-        this.photoDisplayer.chooseAndDisplayPhoto();
+        
+      
+      
+      
+      
+      //this.photoDisplayer.chooseAndDisplayPhoto();
+//this.photoDisplayer.spawnPhoto("day5PostcardText");
+
+        this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
 
         // Audio
         let roomAmbience = new CreateAudio("roomAmbience.mp3");
