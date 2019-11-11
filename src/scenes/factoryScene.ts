@@ -6,14 +6,15 @@ import { GameStats } from '../gameStats';
 import { dollKeeper } from './dollKeeper';
 import { SceneManager } from './sceneManager';
 import { CreateAudio } from '../createAudio';
+import { photoDisplay } from '../photoDisplay';
 import { utilMath } from '../utilMath';
-
 
 export class factoryScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
         private readonly sceneManager: SceneManager,
-        public readonly gameStats: GameStats) {
+        public readonly gameStats: GameStats,
+        public readonly photoDisplayer: photoDisplay){
     }
 
 
@@ -105,6 +106,7 @@ export class factoryScene implements gameScene {
             this.gameStats.finishDay(this.clock.getTime());
             this.sceneManager.loadScene('homeScene');
         });
+
         playButton.interactive = true;
         playButton.zIndex = Infinity;
         playButton.position.set(appWidth - playButton.width, 0);
@@ -137,11 +139,11 @@ export class factoryScene implements gameScene {
             getSprite(this.assetManager.Textures["clockHourPointer"]),
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
+        this.clock.startClock(this.gameStats.currentDay);
         this.clock.addEndofDayCallbacks(() => this.stayAtWork());
         this.clock.addWorkEndCallback(() => this.overTimeBegins());
         this.clock.addWorkStartCallback(() => this.workBegins());
 
-        this.clock.startClock();
         this.app.stage.addChild(this.clock.mainContainer);
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
         this.lightFilter.alpha = 0.5;
@@ -236,6 +238,8 @@ export class factoryScene implements gameScene {
             //dim lights
             this.lightFilter.alpha = 0.5;
             this.lightSwitchSound.play();
+            //spawn dialog box
+            this.photoDisplayer.spawnClickablePrompt("textBoxSample");
             this.clock.startClock();
             //spawn dialog box
         }, 1000);

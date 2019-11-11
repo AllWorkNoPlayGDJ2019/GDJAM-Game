@@ -15,6 +15,7 @@ export class AssetManager {
         this.AssetLocations["homebackground"]="assets/home_background.png";
         this.AssetLocations["playButton"] = "assets/play_hover.png";
         this.AssetLocations["startMenu"] = "assets/startMenu.png";
+        this.AssetLocations["textBoxSample"] = "assets/textBoxes/textBoxSample.png";
         this.AssetLocations["day1Happy"]="assets/day_1.png";
         this.AssetLocations["day2Happy"]="assets/day_2_happy.png";
         this.AssetLocations["day2Sad"]="assets/day_2_sad.png";
