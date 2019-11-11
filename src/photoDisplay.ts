@@ -102,7 +102,7 @@ export class photoDisplay {
         });
     }
 
-    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  {
+    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  : PIXI.Sprite{
         const photo = PIXI.Sprite.from(this.assetManager.Textures[assetName]);
         this.app.stage.addChild(photo);
         const top = new PIXI.Point(this.app.view.width / 2, 0.0);
@@ -144,5 +144,7 @@ export class photoDisplay {
             //    photo.parent.removeChild();
             //}, 2.0);
         });
+
+        return photo;
     }
 }

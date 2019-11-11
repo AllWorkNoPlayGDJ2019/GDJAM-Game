@@ -57,16 +57,13 @@ export class homeScene implements gameScene {
       
       
       this.photoDisplayer.chooseAndDisplayPhoto();
-//this.photoDisplayer.spawnPhoto("day5PostcardText");
-
-     //
 
         // Audio
         let roomAmbience = new CreateAudio("roomAmbience.mp3");
         roomAmbience.play();
         roomAmbience.loop();
 
-        const exitSign = getSprite(this.assetManager.Textures["exitSign"]);
+        const exitSign = getSprite(this.assetManager.Textures["toWork"]);
         const exitButtonClickable = new Clickable(exitSign);
         exitButtonClickable.addCallback(() => {
             this.sceneManager.loadScene('factoryScene');

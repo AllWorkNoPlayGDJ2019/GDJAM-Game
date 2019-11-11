@@ -3,11 +3,13 @@ import { AssetManager } from '../assetManager';
 import { Clickable } from '../ui/clickable';
 import { SceneManager } from './sceneManager';
 import { Hoverable } from '../ui/hoverable';
+import { photoDisplay } from '../photoDisplay';
 
 export class menuScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
-        public readonly sceneManager: SceneManager) {
+        public readonly sceneManager: SceneManager,
+        public readonly photoDisplayer: photoDisplay) {
     }
 
     public showScene() {
@@ -47,6 +49,9 @@ export class menuScene implements gameScene {
         playButton.position.set(appWidth / 2 - playButton.width / 2, appHeight / 2);
         playButton.scale.set(0.5,0.5);
 
+        const prompt = this.photoDisplayer.spawnClickablePrompt("startPrompt");
+        prompt.scale.x = 0.5;
+        prompt.scale.y = 0.5;
     }
 
     public removeScene() {
