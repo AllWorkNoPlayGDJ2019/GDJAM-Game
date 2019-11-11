@@ -114,7 +114,7 @@ export class factoryScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth-playButton.width*1.1,0+this.app.view.height*0.175);
+        playButton.position.set(appWidth-playButton.width,0);
 
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
