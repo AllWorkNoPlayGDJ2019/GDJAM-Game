@@ -28,7 +28,7 @@ const photoDisplayer = new photoDisplay(app, assetManager, gameStat);
 
 assetManager.load().then(() => {
     sceneManager.scenes= {
-        factoryScene: new factoryScene(app, assetManager, sceneManager,gameStat),
+        factoryScene: new factoryScene(app, assetManager, sceneManager,gameStat, photoDisplayer),
         demoScene: new demoScene(app),
         menuScene:menuscene,
         homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer)

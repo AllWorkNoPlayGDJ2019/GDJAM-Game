@@ -12,7 +12,7 @@ export class photoDisplay {
         public readonly gameStats: GameStats) {
     }
 
-    private readonly photoSound = new CreateAudio("switch-5.mp3");     
+    private readonly photoSound = new CreateAudio("switch-5.mp3");
 
     public chooseAndDisplayPhoto() {
         const todayStat = this.gameStats.daystatList[this.gameStats.gameStage];
@@ -26,10 +26,12 @@ export class photoDisplay {
         this.app.stage.addChild(photo);
         photo.position.set(this.app.view.width / 2, 0);
         photo.pivot.set(photo.width / 2, photo.height / 2);
+        photo.scale.x = 0.9;
+        photo.scale.y = 0.9;
 
 
         const dragBehaviour = new Dragable(photo);
-        dragBehaviour.addStartCallback(()=>{
+        dragBehaviour.addStartCallback(() => {
             this.photoSound.stop();
             this.photoSound.play();
         });
@@ -48,7 +50,7 @@ export class photoDisplay {
         }, 33)
     }
 
-    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[]) {
+    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  {
         const photo = PIXI.Sprite.from(this.assetManager.Textures[assetName]);
         this.app.stage.addChild(photo);
         const top = new PIXI.Point(this.app.view.width / 2, 0.0);
@@ -78,18 +80,17 @@ export class photoDisplay {
                 photo.position = utilMath.lerpPoint(photo.position, top, 0.08);
                 photo.alpha = utilMath.lerp(photo.alpha, 0.0, 0.05);
 
-                if(photo.alpha < 0.1)
-                {
+                if (photo.alpha < 0.1) {
                     photo.parent.removeChild(photo);
                     window.clearInterval(disappearID);
                 }
 
             }, 33);
 
-           //setTimeout(() => {
-           //    window.clearInterval(disappearID);
-           //    photo.parent.removeChild();
-           //}, 2.0);
+            //setTimeout(() => {
+            //    window.clearInterval(disappearID);
+            //    photo.parent.removeChild();
+            //}, 2.0);
         });
     }
 }
