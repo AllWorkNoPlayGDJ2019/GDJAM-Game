@@ -23,9 +23,9 @@ const sceneManager = new SceneManager(gameStat);
 
 const assetManager = new AssetManager();
 
-const menuscene = new menuScene(app,assetManager,sceneManager);
 
 const photoDisplayer = new photoDisplay(app, assetManager, gameStat);
+const menuscene = new menuScene(app,assetManager,sceneManager, photoDisplayer);
 
 assetManager.load().then(() => {
     sceneManager.scenes= {

@@ -28,8 +28,10 @@ export class AssetManager {
         this.AssetLocations["day5Postcard"]="assets/day_5_university_postcard.png";
         this.AssetLocations["day5PostcardText"]="assets/day_5_university_postcard_text.png";
         this.AssetLocations["day5Gone"]="assets/day_5_shes_gone.png";
-
+        this.AssetLocations["startPrompt"]="assets/start_scene.png";
+        this.AssetLocations["toWork"]="assets/go_to_work.png";
     }
+
     public load(): Promise<void> {
         console.log('loading');
         const loader = new PIXI.Loader();
