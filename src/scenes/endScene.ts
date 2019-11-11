@@ -4,13 +4,16 @@ import { SceneManager } from './sceneManager';
 import { GameStats } from '../gameStats';
 import { Dragable } from '../ui/dragable';
 import { Clickable } from '../ui/clickable';
+import { photoDisplay } from '../photoDisplay';
 
 export class endScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
         public readonly sceneManager: SceneManager,
-        public readonly gameStats: GameStats) {
+        public readonly gameStats: GameStats,
+        private readonly photoDisplayer:photoDisplay) {
     }
+    
 
     public showScene() {
         this.app.stage = new PIXI.Container();
@@ -42,6 +45,8 @@ export class endScene implements gameScene {
 
         const images = this.gameStats.storyImages;
         console.log(images);
+        this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
+
         images.forEach(image => {
             const imageSprite = getSprite(this.assetManager.Textures[image]);
             const imageSpriteDragable = new Dragable(imageSprite);

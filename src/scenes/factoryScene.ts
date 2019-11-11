@@ -121,7 +121,7 @@ export class factoryScene implements gameScene {
 
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
-            const currentGoal = this.gameStats.moneyGoal;
+            const currentGoal =300; this.gameStats.moneyGoal;
             if (this.textBox === undefined) {
                 const style = new PIXI.TextStyle({
                     "fill": "#d20000",

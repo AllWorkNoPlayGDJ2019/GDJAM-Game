@@ -33,7 +33,7 @@ assetManager.load().then(() => {
         demoScene: new demoScene(app),
         menuScene:menuscene,
         homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer),
-        endScene:new endScene(app,assetManager,sceneManager,gameStat)
+        endScene:new endScene(app,assetManager,sceneManager,gameStat,photoDisplayer)
     };
     sceneManager.loadScene("menuScene");
 });
