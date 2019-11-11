@@ -139,7 +139,7 @@ export class factoryScene implements gameScene {
             getSprite(this.assetManager.Textures["clockHourPointer"]),
             getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
-        this.clock.startClock(this.gameStats.currentDay);
+        this.clock.startClock();
         this.clock.addEndofDayCallbacks(() => this.stayAtWork());
         this.clock.addWorkEndCallback(() => this.overTimeBegins());
         this.clock.addWorkStartCallback(() => this.workBegins());

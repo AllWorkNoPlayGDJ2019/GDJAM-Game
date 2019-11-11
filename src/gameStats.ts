@@ -6,7 +6,7 @@ export class GameStats {
     public money = 0;
     public childHappiness = 0;
     public today = new Date();
-    public gameStage = 0;
+    public gameStage =0;
     public currentDay = new Date(1990, 5, 12, 5, 50, 0, 0);
 
     public get moneyGoal(){
@@ -74,6 +74,7 @@ export class GameStats {
     }
 
    public readonly daystatList = [
+       this.day1,
        this.day1,
        this.day2,
        this.day3,
