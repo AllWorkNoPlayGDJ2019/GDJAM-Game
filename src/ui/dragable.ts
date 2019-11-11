@@ -43,8 +43,8 @@ export class Dragable {
     private onDragMove() {
         if (this.data !== null) {
             const newPosition = this.data.getLocalPosition(this.sprite.parent);
-            this.sprite.position.x = newPosition.x;
-            this.sprite.position.y = newPosition.y;
+            this.sprite.position.x = newPosition.x;//-this.sprite.width*0.5;
+            this.sprite.position.y = newPosition.y;//-this.sprite.height*0.5;
         }
     }
 }
