@@ -25,8 +25,10 @@ export class AssetManager {
         this.AssetLocations["day4Sad"]="assets/day_4_sad.png";
         this.AssetLocations["day5Factory"]="assets/day_5_factory.png";
         this.AssetLocations["day5University"]="assets/day_5_university.png";
+
         this.AssetLocations["day5Postcard"]="assets/day_5_university_postcard.png";
         this.AssetLocations["day5PostcardText"]="assets/day_5_university_postcard_text.png";
+        
         this.AssetLocations["day5Gone"]="assets/day_5_shes_gone.png";
         this.AssetLocations["startPrompt"]="assets/start_scene.png";
         this.AssetLocations["toWork"]="assets/go_to_work.png";
