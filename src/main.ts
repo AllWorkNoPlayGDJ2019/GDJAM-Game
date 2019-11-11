@@ -7,6 +7,7 @@ import { GameStats } from './gameStats';
 import { photoDisplay } from './photoDisplay';
 import { menuScene } from './scenes/menuScene';
 import { SceneManager } from "./scenes/sceneManager";
+import { endScene } from './scenes/endScene';
 require('../assets/main.css');
 
 const app = new PIXI.Application({
@@ -17,8 +18,8 @@ app.resizeTo=window;
 app.resize();
 console.log([window.innerHeight,window.innerWidth,app.view]);
 document.body.appendChild(app.view);
-const sceneManager = new SceneManager();
 const gameStat = new GameStats();
+const sceneManager = new SceneManager(gameStat);
 
 const assetManager = new AssetManager();
 
@@ -28,22 +29,11 @@ const photoDisplayer = new photoDisplay(app, assetManager, gameStat);
 
 assetManager.load().then(() => {
     sceneManager.scenes= {
-        factoryScene: new factoryScene(app, assetManager, sceneManager,gameStat),
+        factoryScene: new factoryScene(app, assetManager, sceneManager,gameStat, photoDisplayer),
         demoScene: new demoScene(app),
         menuScene:menuscene,
-        homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer)
+        homeScene: new homeScene(app, assetManager, gameStat, sceneManager, photoDisplayer),
+        endScene:new endScene(app,assetManager,sceneManager,gameStat)
     };
     sceneManager.loadScene("menuScene");
-    //scenes.factoryScene.showScene();
-    
 });
-//requestAnimationFrame( animate );
-//
-//function animate() {
-//
-//    requestAnimationFrame(animate);
-//
-//    // render the stage
-//    app.renderer.render(app.stage);
-//    //setTimeout(animate,1000/2);
-//}

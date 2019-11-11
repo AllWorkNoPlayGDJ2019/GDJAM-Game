@@ -10,7 +10,7 @@ export class homeScene implements gameScene {
     constructor(public readonly app: PIXI.Application,
         public readonly assetManager: AssetManager,
         public readonly gameStats: GameStats,
-        public readonly sceneManager:SceneManager,
+        public readonly sceneManager: SceneManager,
         public readonly photoDisplayer: photoDisplay) {
     }
 
@@ -21,7 +21,6 @@ export class homeScene implements gameScene {
         background.tint = 0x0000000;
         background.width = this.app.view.width;
         background.height = this.app.view.height;
-        console.log({ w: background.width, h: background.height })
         this.app.stage.addChild(background)
 
         const appWidth = this.app.view.width;
@@ -37,6 +36,21 @@ export class homeScene implements gameScene {
         home.width = appWidth;
         home.height = appHeight;
 
+   /*     this.photoDisplayer.spawnClickablePrompt("textBoxSample", [
+            () => {
+                const exitSign = PIXI.Sprite.from(this.assetManager.Textures["exitSign"]);
+                const exitButtonClickable = new Clickable(exitSign);
+                exitButtonClickable.addCallback(() => {
+                    this.sceneManager.loadScene('factoryScene');
+                });
+                this.app.stage.addChild(exitSign);
+                exitSign.position.set(this.app.view.width - exitSign.width, 0);
+
+                // spawn photo
+                this.photoDisplayer.chooseAndDisplayPhoto()
+            }
+        ]);
+      */
         this.photoDisplayer.chooseAndDisplayPhoto();
 
         // Audio

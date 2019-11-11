@@ -16,7 +16,6 @@ export class doll {
     }
     interruptMovement() {
         this.isBeltMovable = false;
-        console.log('interrupted');
     }
     getPosition() {
         return this.sprite.position;
