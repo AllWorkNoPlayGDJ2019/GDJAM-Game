@@ -35,6 +35,10 @@ export class AssetManager {
         this.AssetLocations["overtime"]="assets/overtime.png";
 
         this.AssetLocations["redPocket"]="assets/red_pocket.png";
+        this.AssetLocations["workEnds"]="assets/overtimeBegins.png";
+        
+        this.AssetLocations["workBegins"]="assets/work_starts_.png";
+        
         
         
     }

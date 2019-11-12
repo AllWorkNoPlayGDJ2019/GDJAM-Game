@@ -134,6 +134,7 @@ export class photoDisplay {
 
                 if (photo.alpha < 0.1) {
                     photo.parent.removeChild(photo);
+                    photo.destroy();
                     window.clearInterval(disappearID);
                 }
 

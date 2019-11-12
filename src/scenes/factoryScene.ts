@@ -19,7 +19,7 @@ export class factoryScene implements gameScene {
 
 
 
-
+    private overtimeActive: boolean;
     public background: PIXI.Sprite;
     public belt: PIXI.Sprite;
     public beltContainer: PIXI.Container;
@@ -75,6 +75,8 @@ export class factoryScene implements gameScene {
 
         const appWidth = this.app.view.width;
         const appHeight = this.app.view.height;
+
+        this.overtimeActive = false;
 
         const getSprite = (spriteSrc) => {
             return PIXI.Sprite.from(spriteSrc);
@@ -149,7 +151,17 @@ export class factoryScene implements gameScene {
                     "fontFamily": "Courier New",
                     "fontWeight": "bold"
                 });
-            const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(),addStyle);
+
+               
+            const addMoneyBox = new PIXI.Text("+ ",addStyle);
+            if (this.overtimeActive) 
+            {
+                addMoneyBox.text += (this.gameStats.itemValue * 2).toString();
+            } else
+            {
+                addMoneyBox.text += this.gameStats.itemValue.toString();
+            }
+
             this.app.stage.addChild(addMoneyBox);
             addMoneyBox.position.set(this.textBox.position.x, this.textBox.position.y - this.textBox.height);
             
@@ -201,9 +213,16 @@ export class factoryScene implements gameScene {
             new PIXI.Point(-140, appHeight * 0.8   )],
             new PIXI.Point(appWidth, 0),
             200,
-            new PIXI.Rectangle(appWidth - this.box.width, appHeight - this.box.height, this.box.width, this.box.height),
+            new PIXI.Rectangle(this.box.position.x - this.box.pivot.x, this.box.position.y - this.box.pivot.y, this.box.width, this.box.height),
             () => {
-                this.gameStats.successfulAction();
+                if(this.overtimeActive)
+                {
+                    this.gameStats.successfulOvertimeAction();
+                } else
+                {
+                    this.gameStats.successfulAction();
+
+                }
                 moneyUpdater();
                 moneyAnimation();
                 this.boxAnimation();
@@ -310,34 +329,40 @@ export class factoryScene implements gameScene {
     }
 
     public workBegins() {
-        this.clock.stopClock();
+        this.overtimeActive = false;
         this.lightSwitchSound.play();
         this.lightFilter.alpha = 1.0;
-        this.clock.startClock();
-        setTimeout(() => {
-            this.workBuzzerSound.play();
-            this.dollkeeper.startSpawn();
-        }, 1000);
+
+        this.clock.stopClock();
+        this.photoDisplayer.spawnClickablePrompt("workBegins", [()=>{
+            setTimeout(() => {
+                this.workBuzzerSound.play();
+                this.dollkeeper.startSpawn();
+                this.clock.startClock();
+            }, 1000);
+        
+        }]);
+        
     }
 
     public overTimeBegins() {
+        this.overtimeActive = true;
+
         //play sound
         this.workBuzzerSound.play();
         this.crowdSound.stop();
         this.clock.stopClock();
-
-        setTimeout(() => {
-            //dim lights
-            this.lightFilter.alpha = 0.5;
-            this.lightSwitchSound.play();
-            //spawn dialog box
-            this.clock.startClock();
-            //spawn dialog box
-        }, 1000);
-        //dim lights slowly
-        //show work is over
-        //show Overtime text
-        //
+        
+        //spawn dialog box
+        this.photoDisplayer.spawnClickablePrompt("workEnds", [()=>{
+            setTimeout(() => {
+                //dim lights
+                this.lightFilter.alpha = 0.5;
+                this.lightSwitchSound.play();
+                this.clock.startClock();
+    
+            }, 1000);
+        }]);
     }
 
     private boxAnimation() {
