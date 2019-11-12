@@ -36,27 +36,46 @@ export class homeScene implements gameScene {
         home.width = appWidth;
         home.height = appHeight;
 
-   /*     this.photoDisplayer.spawnClickablePrompt("textBoxSample", [
-            () => {
-                const exitSign = PIXI.Sprite.from(this.assetManager.Textures["exitSign"]);
-                const exitButtonClickable = new Clickable(exitSign);
-                exitButtonClickable.addCallback(() => {
-                    this.sceneManager.loadScene('factoryScene');
-                });
-                this.app.stage.addChild(exitSign);
-                exitSign.position.set(this.app.view.width - exitSign.width, 0);
+        const style = new PIXI.TextStyle({
+            "fill": "#000000",
+            "fontFamily": "Courier New",
+            "fontWeight": "bold",
+            "fontSize": 48
+        });
+        const daysLeft = new PIXI.Text((5 - this.gameStats.gameStage).toString() + " WORK DAYS LEFT", style);
+        this.app.stage.addChild(daysLeft);
+        daysLeft.position.set(appWidth * 0.5 - daysLeft.width * 0.5, appHeight * 0.7);
 
-                // spawn photo
-                this.photoDisplayer.chooseAndDisplayPhoto()
-            }
-        ]);
-      */
+
+        const moneyPocket = getSprite("redPocket");
+        this.app.stage.addChild(moneyPocket);
+        moneyPocket.pivot.set(moneyPocket.width / 2, moneyPocket.height / 2);
+        moneyPocket.position.set(appWidth / 2, appHeight * 0.88);
+
+
+        const moneyStyle = new PIXI.TextStyle({
+            "fill": "#EEEE00",
+            "fontFamily": "Courier New",
+            "fontWeight": "bold",
+            "fontSize": 32
+        });
+        const textBox = new PIXI.Text("money", moneyStyle);
+        const currentMoney = this.gameStats.money;
+        const currentGoal = 300; this.gameStats.moneyGoal;
+
+        this.app.stage.addChild(textBox);
+        textBox.position.set(appWidth / 2 - 0.5 * textBox.width, appHeight * 0.87);
+
+        textBox.text = currentMoney.toFixed(1) + "/" + currentGoal + '¥';
+
         
-      
-      
-      
-      
-      this.photoDisplayer.chooseAndDisplayPhoto();
+
+
+
+
+
+        
+        this.photoDisplayer.chooseAndDisplayPhoto();
 
         // Audio
         let roomAmbience = new CreateAudio("roomAmbience.mp3");

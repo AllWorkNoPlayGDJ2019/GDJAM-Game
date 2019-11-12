@@ -27,8 +27,8 @@ export class photoDisplay {
         this.app.stage.addChild(photo);
         photo.position.set(this.app.view.width / 2, 0);
         photo.pivot.set(photo.width / 2, photo.height / 2);
-        photo.scale.x = 0.9;
-        photo.scale.y = 0.9;
+        photo.scale.x = 1.2;
+        photo.scale.y = 1.2;
 
         const dragBehaviour = new Dragable(photo);
         dragBehaviour.addStartCallback(() => {
@@ -134,6 +134,7 @@ export class photoDisplay {
 
                 if (photo.alpha < 0.1) {
                     photo.parent.removeChild(photo);
+                    photo.destroy();
                     window.clearInterval(disappearID);
                 }
 

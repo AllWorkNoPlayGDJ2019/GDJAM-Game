@@ -37,9 +37,9 @@ export class dollKeeper {
             return next;
         }
         const dollSprite = getSprite(this.dollTexture);
-        dollSprite.pivot.set(dollSprite.width / 2, dollSprite.height / 2);
+        dollSprite.pivot.set(dollSprite.width / 2, dollSprite.height);
         if (Math.random() > 0.2) {
-            dollSprite.rotation = Math.PI * Math.random();
+            dollSprite.rotation = Math.PI * 0.5 * Math.random();
         }
         this.parent.addChildAt(dollSprite, this.parent.children.length - 1);
 
