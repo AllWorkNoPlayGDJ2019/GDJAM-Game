@@ -45,7 +45,16 @@ export class endScene implements gameScene {
 
         const images = this.gameStats.storyImages;
         console.log(images);
-        this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
+        const money =this.gameStats.money;
+        const happyness = this.gameStats.childHappiness;
+        if(money>=300){
+            this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
+            this.gameStats.selectImage("day5University");
+        }else if(money<=300&&happyness>=30){
+            this.photoDisplayer.spawnPhoto("day5Factory");
+        }else{
+            this.photoDisplayer.spawnPhoto("day5Gone");
+        }
 
         images.forEach(image => {
             const imageSprite = getSprite(this.assetManager.Textures[image]);
