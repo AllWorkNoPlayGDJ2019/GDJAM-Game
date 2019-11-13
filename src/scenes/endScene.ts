@@ -11,9 +11,9 @@ export class endScene implements gameScene {
         public readonly assetManager: AssetManager,
         public readonly sceneManager: SceneManager,
         public readonly gameStats: GameStats,
-        private readonly photoDisplayer:photoDisplay) {
+        private readonly photoDisplayer: photoDisplay) {
     }
-    
+
 
     public showScene() {
         this.app.stage = new PIXI.Container();
@@ -40,19 +40,22 @@ export class endScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth - playButton.width, appHeight-playButton.height);
+        playButton.position.set(appWidth - playButton.width, appHeight - playButton.height);
         this.app.stage.addChild(playButton);
 
         const images = this.gameStats.storyImages;
-        console.log(images);
-        const money =this.gameStats.money;
-        const happyness = this.gameStats.childHappiness;
-        if(money>=300){
+        const money = this.gameStats.money;
+        const totalFreetime = this.gameStats.accumulatedFreeHours;
+        console.log({ money, totalFreetime });
+        if (money >= 300) {
+            console.log("University");
             this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
             this.gameStats.selectImage("day5University");
-        }else if(money<=300&&happyness>=30){
+        } else if (money <= 300 && totalFreetime >= 30) {
+            console.log("Factory");
             this.photoDisplayer.spawnPhoto("day5Factory");
-        }else{
+        } else {
+            console.log("Gone");
             this.photoDisplayer.spawnPhoto("day5Gone");
         }
 
@@ -60,14 +63,14 @@ export class endScene implements gameScene {
             const imageSprite = getSprite(this.assetManager.Textures[image]);
             const imageSpriteDragable = new Dragable(imageSprite);
             imageSpriteDragable.addStartCallback(() => {
-                imageSprite.parent.setChildIndex(imageSprite,imageSprite.parent.children.length-1);
-             });
-            imageSprite.anchor.set(0.5,0.5);
+                imageSprite.parent.setChildIndex(imageSprite, imageSprite.parent.children.length - 1);
+            });
+            imageSprite.anchor.set(0.5, 0.5);
             this.app.stage.addChild(imageSprite);
-            imageSprite.rotation = Math.random()*Math.PI*0.25-Math.PI*0.125;
+            imageSprite.rotation = Math.random() * Math.PI * 0.25 - Math.PI * 0.125;
             imageSprite.position.set(
-                0.2 * appWidth + Math.random() * 0.6 * appWidth - 0*imageSprite.width,
-                0.2 * appHeight + Math.random() * 0.6 * appHeight - 0*imageSprite.height);
+                0.2 * appWidth + Math.random() * 0.6 * appWidth - 0 * imageSprite.width,
+                0.2 * appHeight + Math.random() * 0.6 * appHeight - 0 * imageSprite.height);
             imageSprite.scale.set(1, 1);
         });
 

@@ -30,11 +30,11 @@ export class factoryScene implements gameScene {
     public workBuzzerSound = new CreateAudio("workBuzzer.mp3");
     public lightSwitchSound = new CreateAudio("lightSwitch.mp3");
 
-   public crowdSound = new CreateAudio("crowd.mp3");
+    public crowdSound = new CreateAudio("crowd.mp3");
 
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
-    public spriteAnim; 
+    public spriteAnim;
 
     private textBox: PIXI.Text;
 
@@ -114,14 +114,14 @@ export class factoryScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth-playButton.width,0);
+        playButton.position.set(appWidth - playButton.width, 0);
 
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
 
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
-            const currentGoal =300; this.gameStats.moneyGoal;
+            const currentGoal = 300; this.gameStats.moneyGoal;
             if (this.textBox === undefined) {
                 const style = new PIXI.TextStyle({
                     "fill": "#d20000",
@@ -141,10 +141,10 @@ export class factoryScene implements gameScene {
                     "fontFamily": "Courier New",
                     "fontWeight": "bold"
                 });
-            const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(),addStyle);
+            const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(), addStyle);
             this.app.stage.addChild(addMoneyBox);
             addMoneyBox.position.set(this.textBox.position.x - addMoneyBox.width, this.textBox.position.y + this.textBox.height);
-            setTimeout(()=> this.app.stage.removeChild(addMoneyBox),100);
+            setTimeout(() => this.app.stage.removeChild(addMoneyBox), 100);
         };
 
         moneyUpdater();
@@ -167,7 +167,7 @@ export class factoryScene implements gameScene {
         this.clock.mainContainer.position = new PIXI.Point(50, 50);
         this.lightFilter.alpha = 0.5;
 
-      const dollSize = 128;
+        const dollSize = 128;
         this.dollkeeper = new dollKeeper(
             this.app.stage,
             4,
@@ -192,7 +192,16 @@ export class factoryScene implements gameScene {
 
 
     private stayAtWork() {
-        console.log("stay at factory");
+        this.clock.stopClock();
+        const intervalId = setInterval(() => {
+            this.lightFilter.alpha -= 0.01;
+            if (this.lightFilter.alpha <= 0.0) {
+                window.clearInterval(intervalId);
+                this.gameStats.finishDay(this.clock.getTime());
+                this.sceneManager.loadScene('homeScene');
+            }
+        }, 20);
+
     }
 
     public spawnShadows(rowCount: number) {
@@ -232,7 +241,7 @@ export class factoryScene implements gameScene {
 
     }
 
-    public animateWorkers(shadowSprite :any) {
+    public animateWorkers(shadowSprite: any) {
         let interval = 0;
         let direction = "up"; // workers move up and down while working, starting with up
 
@@ -240,17 +249,17 @@ export class factoryScene implements gameScene {
             interval = interval + 1;
 
             // switch directions each 5 animation frames
-            if (interval > 5) { 
+            if (interval > 5) {
                 interval = 0;
                 if (direction === "up")
                     direction = "down";
                 else if (direction === "down")
                     direction = "up";
             }
-            
+
             // set lerp targets
-            const shadowTargetUp = new PIXI.Point(0, 0 + this.app.view.height*0.03);
-            const shadowTargetDown = new PIXI.Point(0, 0 - this.app.view.height*0.03);
+            const shadowTargetUp = new PIXI.Point(0, 0 + this.app.view.height * 0.03);
+            const shadowTargetDown = new PIXI.Point(0, 0 - this.app.view.height * 0.03);
 
             // move up or down
             if (direction === "up") {

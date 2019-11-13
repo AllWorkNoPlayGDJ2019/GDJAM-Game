@@ -16,7 +16,7 @@ export class photoDisplay {
 
     public chooseAndDisplayPhoto() {
         const todayStat = this.gameStats.daystatList[this.gameStats.gameStage];
-        const selectedPhoto = (this.gameStats.childHappiness > todayStat.happinessGoal) ?
+        const selectedPhoto = (this.gameStats.accumulatedFreeHours > todayStat.happinessGoal) ?
             todayStat.goodPhoto : todayStat.badPhoto;
         this.gameStats.selectImage(selectedPhoto);
         this.spawnPhoto(selectedPhoto);
