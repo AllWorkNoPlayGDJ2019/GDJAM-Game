@@ -7,11 +7,11 @@ module.exports = {
 
     entry: "./src/main.ts", //relative to root of the application
     devServer: {
+        contentBase: path.join(__dirname, '.'),
     },
     devtool: false,
     output: {
-        filename: './dist/app.bundle.js',
-        //   path: path.resolve(__dirname, 'dist'),
+        filename: './app.bundle.js',
     }, 
     resolve: {
         extensions: [".ts", ".js", ".tsx"]
@@ -34,7 +34,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             hash: true,
-            filename: './dist/index.html' //relative to root of the application
+            filename: './index.html' //relative to root of the application
         }),
         new CopyPlugin([
             { from: './assets', to: './dist/assets' },
