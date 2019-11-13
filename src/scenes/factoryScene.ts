@@ -238,8 +238,8 @@ export class factoryScene implements gameScene {
     private stayAtWork() {
         this.clock.stopClock();
         const intervalId = setInterval(() => {
-            this.lightFilter.alpha -= 0.01;
-            if (this.lightFilter.alpha <= 0.0) {
+            this.lightFilter.alpha -= 0.005;
+            if (this.lightFilter.alpha <= 0.2) {
               window.clearInterval(intervalId);        
               this.photoDisplayer.spawnClickablePrompt("overtime", [()=>{
                     this.gameStats.finishDay(this.clock.getTime());
@@ -261,6 +261,8 @@ export class factoryScene implements gameScene {
             } else {
                 shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths3[0]);
             }
+            this.app.stage.addChild(shadowSprite);
+            
             const shadowPos = shadowSprite.position;
             const shadowTarg = new PIXI.Point(0, 0);
 
@@ -268,7 +270,6 @@ export class factoryScene implements gameScene {
             shadowSprite.width = this.app.view.width;
             shadowSprite.height = this.app.view.height;
 
-            this.app.stage.addChild(shadowSprite);
 
 
 
@@ -290,7 +291,9 @@ export class factoryScene implements gameScene {
     public animateWorkers(shadowSprite: any) {
         let interval = 0;
         let direction = "up"; // workers move up and down while working, starting with up
-
+        if(shadowSprite===undefined){
+            alert('no sprite');
+        }
         this.spriteAnim = setInterval(() => {
             interval = interval + 1;
 
@@ -318,6 +321,7 @@ export class factoryScene implements gameScene {
     }
 
     public removeScene() {
+        console.log('removeScene');
         this.crowdSound.stop();
         this.conveyorSound.stop();
         this.clockSound.stop();
