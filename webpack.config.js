@@ -11,7 +11,7 @@ module.exports = {
     },
     devtool: false,
     output: {
-        filename: './app.bundle.js',
+        filename: 'app.bundle.js',
     }, 
     resolve: {
         extensions: [".ts", ".js", ".tsx"]
@@ -39,7 +39,8 @@ module.exports = {
         new CopyPlugin([
             { from: './assets', to: './dist/assets' },
         ]),
-        new NormalModuleReplacementPlugin(/'\.\.\/assets/,/'\.\.\/assets/)
+        new NormalModuleReplacementPlugin(/'\.\.\/assets/,/'\.\.\/assets/),
+        new NormalModuleReplacementPlugin(/"\.\.\/\.\/dist/,/\./),
     ]
 
 }
