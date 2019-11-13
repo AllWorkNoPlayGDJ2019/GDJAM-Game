@@ -32,6 +32,7 @@ export class photoDisplay {
 
         const dragBehaviour = new Dragable(photo);
         dragBehaviour.addStartCallback(() => {
+            photo.parent.setChildIndex(photo,photo.parent.children.length-1);
             this.photoSound.stop();
             this.photoSound.play();
         });
