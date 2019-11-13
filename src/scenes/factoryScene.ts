@@ -19,7 +19,7 @@ export class factoryScene implements gameScene {
 
 
 
-
+    private overtimeActive: boolean;
     public background: PIXI.Sprite;
     public belt: PIXI.Sprite;
     public beltContainer: PIXI.Container;
@@ -37,6 +37,7 @@ export class factoryScene implements gameScene {
     public spriteAnim;
 
     private textBox: PIXI.Text;
+    private box: PIXI.Sprite;
 
     public shadowSpritePaths1: string[] = [
         "assets/shadowWorkerFrames/shadowsA1.png",  // we're only using the first of each since animation not working, ie. A1, B1, C1
@@ -75,11 +76,13 @@ export class factoryScene implements gameScene {
         const appWidth = this.app.view.width;
         const appHeight = this.app.view.height;
 
+        this.overtimeActive = false;
+
         const getSprite = (spriteSrc) => {
             return PIXI.Sprite.from(spriteSrc);
         };
 
-        const belt = getSprite(this.assetManager.Textures["beltbackground"]);
+        const belt = getSprite(this.assetManager.Textures["factory"]);
         this.app.stage.addChild(belt);
         this.beltContainer = new PIXI.Container();
         this.beltContainer.addChild(belt);
@@ -114,44 +117,77 @@ export class factoryScene implements gameScene {
 
         playButton.interactive = true;
         playButton.zIndex = Infinity;
-        playButton.position.set(appWidth - playButton.width, 0);
+
+        playButton.position.set(appWidth-playButton.width, 0.3 * appHeight);
 
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
+
+        const moneyPocket = getSprite("redPocket");
+        this.app.stage.addChild(moneyPocket);
+        moneyPocket.pivot.set(moneyPocket.width / 2, moneyPocket.height / 2);
+        moneyPocket.position.set(appWidth / 2, appHeight * 0.88);
 
         const moneyUpdater = () => {
             const currentMoney = this.gameStats.money;
             const currentGoal = 300; this.gameStats.moneyGoal;
             if (this.textBox === undefined) {
                 const style = new PIXI.TextStyle({
-                    "fill": "#d20000",
+                    "fill": "#EEEE00",
                     "fontFamily": "Courier New",
-                    "fontWeight": "bold"
+                    "fontWeight": "bold",
+                    "fontSize": 32
                 });
-                this.textBox = new PIXI.Text(currentMoney + "/" + currentGoal, style);
+                this.textBox = new PIXI.Text("money", style);
                 this.app.stage.addChild(this.textBox);
-                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.2);
+                this.textBox.position.set(appWidth / 2 - 0.5 * this.textBox.width, appHeight * 0.87);
             }
-            this.textBox.text = currentMoney + "/" + currentGoal;
+            this.textBox.text = currentMoney.toFixed(1) + "/" + currentGoal + '¥';
         };
+
         const moneyAnimation = () => {
             const addStyle = new PIXI.TextStyle(
                 {
-                    "fill": "#d20000",
+                    "fill": "#EEEE00",
                     "fontFamily": "Courier New",
                     "fontWeight": "bold"
                 });
-            const addMoneyBox = new PIXI.Text("+" + this.gameStats.itemValue.toString(), addStyle);
+
+               
+            const addMoneyBox = new PIXI.Text("+ ",addStyle);
+            if (this.overtimeActive) 
+            {
+                addMoneyBox.text += (this.gameStats.itemValue * 2).toString();
+            } else
+            {
+                addMoneyBox.text += this.gameStats.itemValue.toString();
+            }
+
             this.app.stage.addChild(addMoneyBox);
-            addMoneyBox.position.set(this.textBox.position.x - addMoneyBox.width, this.textBox.position.y + this.textBox.height);
-            setTimeout(() => this.app.stage.removeChild(addMoneyBox), 100);
+            addMoneyBox.position.set(this.textBox.position.x, this.textBox.position.y - this.textBox.height);
+            
+
+           const targetY = this.textBox.position.y - appHeight*0.15;
+
+            const startTime = new Date().getTime();
+            const photoIntervalID = setInterval(() => {
+                addMoneyBox.position.y = utilMath.lerp(addMoneyBox.position.y, targetY, 0.02);
+                addMoneyBox.alpha = utilMath.lerp(addMoneyBox.alpha, 0.0, 0.02);
+    
+                if (new Date().getTime() - startTime > 200) {
+                    window.clearInterval(photoIntervalID);
+                    this.app.stage.removeChild(addMoneyBox)
+                }
+            }, 33)
         };
 
         moneyUpdater();
 
-        const box = getSprite(this.assetManager.Textures["box"]);
-        box.scale.set(0.5, 0.5);
-        box.position.set(appWidth - box.width, appHeight - 0.75 * box.height);
+        this.box = getSprite(this.assetManager.Textures["box"]);
+        this.box.scale.set(0.5, 0.5);
+        this.box.pivot.set(this.box.width * 0.5, this.box.height * 0.5);
+        this.box.position.set(appWidth - this.box.width, appHeight - 0.75 * this.box.height*0.5);
+
 
         this.clock = new Clock(
             getSprite(this.assetManager.Textures["clockFace"]),
@@ -164,7 +200,7 @@ export class factoryScene implements gameScene {
         this.clock.addWorkStartCallback(() => this.workBegins());
 
         this.app.stage.addChild(this.clock.mainContainer);
-        this.clock.mainContainer.position = new PIXI.Point(50, 50);
+        this.clock.mainContainer.position = new PIXI.Point(50, appHeight*0.2);
         this.lightFilter.alpha = 0.5;
 
         const dollSize = 128;
@@ -173,20 +209,28 @@ export class factoryScene implements gameScene {
             4,
             this.assetManager.Textures["doll"],
             new PIXI.Point(dollSize, dollSize),
-            [new PIXI.Point(-100, appHeight * 0.75 - 0.5 * dollSize),
-            new PIXI.Point(-80, appHeight * 0.775 - 0.5 * dollSize),
-            new PIXI.Point(-60, appHeight * 0.8 - 0.5 * dollSize)],
+            [new PIXI.Point(-220, appHeight * 0.75 ),
+            new PIXI.Point(-180, appHeight * 0.775 ),
+            new PIXI.Point(-140, appHeight * 0.8   )],
             new PIXI.Point(appWidth, 0),
             200,
-            new PIXI.Rectangle(appWidth - box.width, appHeight - box.height, box.width, box.height),
+            new PIXI.Rectangle(this.box.position.x - this.box.pivot.x, this.box.position.y - this.box.pivot.y, this.box.width, this.box.height),
             () => {
-                this.gameStats.successfulAction();
+                if(this.overtimeActive)
+                {
+                    this.gameStats.successfulOvertimeAction();
+                } else
+                {
+                    this.gameStats.successfulAction();
+
+                }
                 moneyUpdater();
                 moneyAnimation();
+                this.boxAnimation();
             }
         );
 
-        this.app.stage.addChildAt(box, this.app.stage.children.length);
+        this.app.stage.addChildAt(this.box, this.app.stage.children.length);
 
     }
 
@@ -196,9 +240,11 @@ export class factoryScene implements gameScene {
         const intervalId = setInterval(() => {
             this.lightFilter.alpha -= 0.01;
             if (this.lightFilter.alpha <= 0.0) {
-                window.clearInterval(intervalId);
-                this.gameStats.finishDay(this.clock.getTime());
-                this.sceneManager.loadScene('homeScene');
+              window.clearInterval(intervalId);        
+              this.photoDisplayer.spawnClickablePrompt("overtime", [()=>{
+                    this.gameStats.finishDay(this.clock.getTime());
+                    this.sceneManager.loadScene('homeScene');
+              }]);
             }
         }, 20);
 
@@ -289,34 +335,51 @@ export class factoryScene implements gameScene {
     }
 
     public workBegins() {
-        this.clock.stopClock();
+        this.overtimeActive = false;
         this.lightSwitchSound.play();
         this.lightFilter.alpha = 1.0;
-        this.clock.startClock();
-        setTimeout(() => {
-            this.workBuzzerSound.play();
-            this.dollkeeper.startSpawn();
-        }, 1000);
+
+        this.clock.stopClock();
+        this.photoDisplayer.spawnClickablePrompt("workBegins", [()=>{
+            setTimeout(() => {
+                this.workBuzzerSound.play();
+                this.dollkeeper.startSpawn();
+                this.clock.startClock();
+            }, 1000);
+        
+        }]);
+        
     }
 
     public overTimeBegins() {
+        this.overtimeActive = true;
+
         //play sound
         this.workBuzzerSound.play();
         this.crowdSound.stop();
         this.clock.stopClock();
+        
+        //spawn dialog box
+        this.photoDisplayer.spawnClickablePrompt("workEnds", [()=>{
+            setTimeout(() => {
+                //dim lights
+                this.lightFilter.alpha = 0.5;
+                this.lightSwitchSound.play();
+                this.clock.startClock();
+    
+            }, 1000);
+        }]);
+    }
 
-        setTimeout(() => {
-            //dim lights
-            this.lightFilter.alpha = 0.5;
-            this.lightSwitchSound.play();
-            //spawn dialog box
-            this.photoDisplayer.spawnClickablePrompt("textBoxSample");
-            this.clock.startClock();
-            //spawn dialog box
-        }, 1000);
-        //dim lights slowly
-        //show work is over
-        //show Overtime text
-        //
+    private boxAnimation() {
+        const startTime = new Date().getTime();
+        const interval = setInterval(() => {
+            this.box.rotation = Math.random() * 0.1;
+
+            if (new Date().getTime() - startTime > 200) {
+                window.clearInterval(interval);
+                this.box.rotation = 0;
+            }
+        }, 60)
     }
 }

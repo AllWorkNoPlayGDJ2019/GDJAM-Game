@@ -30,8 +30,19 @@ export class AssetManager {
         this.AssetLocations["day5PostcardText"]="assets/day_5_university_postcard_text.png";
         
         this.AssetLocations["day5Gone"]="assets/day_5_shes_gone.png";
+        this.AssetLocations["startPrompt"]="assets/start_scene.png";
+        this.AssetLocations["toWork"]="assets/go_to_work.png";
+        this.AssetLocations["overtime"]="assets/overtime.png";
 
+        this.AssetLocations["redPocket"]="assets/red_pocket.png";
+        this.AssetLocations["workEnds"]="assets/overtimeBegins.png";
+        
+        this.AssetLocations["workBegins"]="assets/work_starts_.png";
+        
+        
+        
     }
+
     public load(): Promise<void> {
         console.log('loading');
         const loader = new PIXI.Loader();

@@ -27,8 +27,8 @@ export class photoDisplay {
         this.app.stage.addChild(photo);
         photo.position.set(this.app.view.width / 2, 0);
         photo.pivot.set(photo.width / 2, photo.height / 2);
-        photo.scale.x = 0.9;
-        photo.scale.y = 0.9;
+        photo.scale.x = 1.2;
+        photo.scale.y = 1.2;
 
         const dragBehaviour = new Dragable(photo);
         dragBehaviour.addStartCallback(() => {
@@ -102,7 +102,7 @@ export class photoDisplay {
         });
     }
 
-    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  {
+    public spawnClickablePrompt(assetName: string, callbacks: (() => void)[] = [])  : PIXI.Sprite{
         const photo = PIXI.Sprite.from(this.assetManager.Textures[assetName]);
         this.app.stage.addChild(photo);
         const top = new PIXI.Point(this.app.view.width / 2, 0.0);
@@ -134,6 +134,7 @@ export class photoDisplay {
 
                 if (photo.alpha < 0.1) {
                     photo.parent.removeChild(photo);
+                    photo.destroy();
                     window.clearInterval(disappearID);
                 }
 
@@ -144,5 +145,7 @@ export class photoDisplay {
             //    photo.parent.removeChild();
             //}, 2.0);
         });
+
+        return photo;
     }
 }
