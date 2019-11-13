@@ -4,12 +4,12 @@ export class GameStats {
 
     public readonly itemValue = 0.5;
     public money = 0;
-    public childHappiness = 0;
+    public accumulatedFreeHours = 0;
     public today = new Date();
-    public gameStage =0;
+    public gameStage = 0;
     public currentDay = new Date(1990, 5, 12, 5, 50, 0, 0);
 
-    public get moneyGoal(){
+    public get moneyGoal() {
         return this.daystatList[this.gameStage].moneyGoal;
     }
 
@@ -28,19 +28,15 @@ export class GameStats {
     }
 
     public finishDay(endTime: Date) {
-        if (endTime.getUTCHours() >= 22) {
-            this.childHappiness -= 10;
-        }
-        else {
-            this.childHappiness += (24 - endTime.getUTCHours());
-        }
+        const freeHours = (24 - endTime.getUTCHours()) + (60 - endTime.getUTCMinutes()) / 60;
+        this.accumulatedFreeHours+=freeHours;
         this.today.setDate(this.today.getDate() + 1);
         this.gameStage++;
     }
 
     day1: dayStats = {
         moneyGoal: 60,
-        happinessGoal: 0,
+        happinessGoal: 6,
         goodPhoto: "day1Happy",
         badPhoto: "day1Happy"
     };
@@ -65,7 +61,7 @@ export class GameStats {
         goodPhoto: "day4Happy",
         badPhoto: "day4Sad"
     };
-  
+
     public readonly storyImages: string[] = [];
 
     public selectImage(imageName: string) {
@@ -73,11 +69,11 @@ export class GameStats {
         this.storyImages.push(imageName);
     }
 
-   public readonly daystatList = [
-       this.day1,
-       this.day1,
-       this.day2,
-       this.day3,
-       this.day4
+    public readonly daystatList = [
+        this.day1,
+        this.day1,
+        this.day2,
+        this.day3,
+        this.day4
     ];
 }
