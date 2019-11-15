@@ -46,19 +46,7 @@ export class endScene implements gameScene {
         const images = this.gameStats.storyImages;
         const money = this.gameStats.money;
         const totalFreetime = this.gameStats.accumulatedFreeHours;
-        console.log({ money, totalFreetime });
-        if (money >= 300) {
-            console.log("University");
-            this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
-            this.gameStats.selectImage("day5University");
-        } else if (money <= 300 && totalFreetime >= 30) {
-            console.log("Factory");
-            this.photoDisplayer.spawnPhoto("day5Factory");
-        } else {
-            console.log("Gone");
-            this.photoDisplayer.spawnPhoto("day5Gone");
-        }
-
+        
         images.forEach(image => {
             const imageSprite = getSprite(this.assetManager.Textures[image]);
             const imageSpriteDragable = new Dragable(imageSprite);
@@ -71,10 +59,22 @@ export class endScene implements gameScene {
             imageSprite.position.set(
                 0.2 * appWidth + Math.random() * 0.6 * appWidth - 0 * imageSprite.width,
                 0.2 * appHeight + Math.random() * 0.6 * appHeight - 0 * imageSprite.height);
-            imageSprite.scale.set(1, 1);
-        });
-
-    }
+                imageSprite.scale.set(1, 1);
+            });
+            
+            console.log({ money, totalFreetime });
+            if (money >= 300) {
+                console.log("University");
+                this.photoDisplayer.spawnPhotoDoubleSided("day5Postcard", "day5PostcardText");
+                this.gameStats.selectImage("day5University");
+            } else if (money <= 300 && totalFreetime >= 30) {
+                console.log("Factory");
+                this.photoDisplayer.spawnPhoto("day5Factory");
+            } else {
+                console.log("Gone");
+                this.photoDisplayer.spawnPhoto("day5Gone");
+            }
+        }
 
     public removeScene() {
         this.app.stage.removeChild(this.app.stage);
