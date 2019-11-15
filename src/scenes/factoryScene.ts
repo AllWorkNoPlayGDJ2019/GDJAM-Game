@@ -39,29 +39,14 @@ export class factoryScene implements gameScene {
     private textBox: PIXI.Text;
     private box: PIXI.Sprite;
 
-    public shadowSpritePaths1: string[] = [
-        "assets/shadowWorkerFrames/shadowsA1.png",  // we're only using the first of each since animation not working, ie. A1, B1, C1
-        "assets/shadowWorkerFrames/shadowsA2.png",
-        "assets/shadowWorkerFrames/shadowsA3.png",
-        "assets/shadowWorkerFrames/shadowsA4.png",
-        "assets/shadowWorkerFrames/shadowsA5.png"
-    ];
+    private readonly getSprite = (spriteSrc) => {
+        return PIXI.Sprite.from(spriteSrc);
+    };
+    private readonly getTexture = (textureSrc) => {
+        return PIXI.Texture.from(textureSrc);
+    }
+    private stopWorkerAnimation = () => { };
 
-    public shadowSpritePaths2: string[] = [
-        "assets/shadowWorkerFrames/shadowsB1.png",
-        "assets/shadowWorkerFrames/shadowsB2.png",
-        "assets/shadowWorkerFrames/shadowsB3.png",
-        "assets/shadowWorkerFrames/shadowsB4.png",
-        "assets/shadowWorkerFrames/shadowsB5.png"
-    ];
-
-    public shadowSpritePaths3: string[] = [
-        "assets/shadowWorkerFrames/shadowsC1.png",
-        "assets/shadowWorkerFrames/shadowsC2.png",
-        "assets/shadowWorkerFrames/shadowsC3.png",
-        "assets/shadowWorkerFrames/shadowsC4.png",
-        "assets/shadowWorkerFrames/shadowsC5.png"
-    ];
 
     public showScene() {
 
@@ -78,11 +63,8 @@ export class factoryScene implements gameScene {
 
         this.overtimeActive = false;
 
-        const getSprite = (spriteSrc) => {
-            return PIXI.Sprite.from(spriteSrc);
-        };
 
-        const belt = getSprite(this.assetManager.Textures["factory"]);
+        const belt = this.getSprite(this.assetManager.Textures["factory"]);
         this.app.stage.addChild(belt);
         this.beltContainer = new PIXI.Container();
         this.beltContainer.addChild(belt);
@@ -101,13 +83,13 @@ export class factoryScene implements gameScene {
         this.crowdSound.loop();
 
         // Spawn shadows
-        this.spawnShadows(3);
+        this.spawnAnimatedWorkers();
 
-        const factorySprite = getSprite(this.assetManager.Textures["belt"]);
+        const factorySprite = this.getSprite(this.assetManager.Textures["belt"]);
 
         factorySprite.width = appWidth;
         factorySprite.height = appHeight;
-        const playButton = getSprite(this.assetManager.Textures["exitSign"]);
+        const playButton = this.getSprite(this.assetManager.Textures["exitSign"]);
         const playButtonClickable = new Clickable(playButton);
 
         playButtonClickable.addCallback(() => {
@@ -118,12 +100,12 @@ export class factoryScene implements gameScene {
         playButton.interactive = true;
         playButton.zIndex = Infinity;
 
-        playButton.position.set(appWidth-playButton.width, 0.3 * appHeight);
+        playButton.position.set(appWidth - playButton.width, 0.3 * appHeight);
 
         this.app.stage.addChild(playButton);
         this.app.stage.addChild(factorySprite);
 
-        const moneyPocket = getSprite("redPocket");
+        const moneyPocket = this.getSprite("redPocket");
         this.app.stage.addChild(moneyPocket);
         moneyPocket.pivot.set(moneyPocket.width / 2, moneyPocket.height / 2);
         moneyPocket.position.set(appWidth / 2, appHeight * 0.88);
@@ -153,27 +135,25 @@ export class factoryScene implements gameScene {
                     "fontWeight": "bold"
                 });
 
-               
-            const addMoneyBox = new PIXI.Text("+ ",addStyle);
-            if (this.overtimeActive) 
-            {
+
+            const addMoneyBox = new PIXI.Text("+ ", addStyle);
+            if (this.overtimeActive) {
                 addMoneyBox.text += (this.gameStats.itemValue * 2).toString();
-            } else
-            {
+            } else {
                 addMoneyBox.text += this.gameStats.itemValue.toString();
             }
 
             this.app.stage.addChild(addMoneyBox);
             addMoneyBox.position.set(this.textBox.position.x, this.textBox.position.y - this.textBox.height);
-            
 
-           const targetY = this.textBox.position.y - appHeight*0.15;
+
+            const targetY = this.textBox.position.y - appHeight * 0.15;
 
             const startTime = new Date().getTime();
             const photoIntervalID = setInterval(() => {
                 addMoneyBox.position.y = utilMath.lerp(addMoneyBox.position.y, targetY, 0.02);
                 addMoneyBox.alpha = utilMath.lerp(addMoneyBox.alpha, 0.0, 0.02);
-    
+
                 if (new Date().getTime() - startTime > 200) {
                     window.clearInterval(photoIntervalID);
                     this.app.stage.removeChild(addMoneyBox)
@@ -183,16 +163,16 @@ export class factoryScene implements gameScene {
 
         moneyUpdater();
 
-        this.box = getSprite(this.assetManager.Textures["box"]);
+        this.box = this.getSprite(this.assetManager.Textures["box"]);
         this.box.scale.set(0.5, 0.5);
         this.box.pivot.set(this.box.width * 0.5, this.box.height * 0.5);
-        this.box.position.set(appWidth - this.box.width, appHeight - 0.75 * this.box.height*0.5);
+        this.box.position.set(appWidth - this.box.width, appHeight - 0.75 * this.box.height * 0.5);
 
 
         this.clock = new Clock(
-            getSprite(this.assetManager.Textures["clockFace"]),
-            getSprite(this.assetManager.Textures["clockHourPointer"]),
-            getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
+            this.getSprite(this.assetManager.Textures["clockFace"]),
+            this.getSprite(this.assetManager.Textures["clockHourPointer"]),
+            this.getSprite(this.assetManager.Textures["clockMinutePointer"]), 0.5);
 
         this.clock.startClock();
         this.clock.addEndofDayCallbacks(() => this.stayAtWork());
@@ -200,7 +180,7 @@ export class factoryScene implements gameScene {
         this.clock.addWorkStartCallback(() => this.workBegins());
 
         this.app.stage.addChild(this.clock.mainContainer);
-        this.clock.mainContainer.position = new PIXI.Point(50, appHeight*0.2);
+        this.clock.mainContainer.position.set(50, appHeight * 0.2);
         this.lightFilter.alpha = 0.5;
 
         const dollSize = 128;
@@ -209,18 +189,16 @@ export class factoryScene implements gameScene {
             4,
             this.assetManager.Textures["doll"],
             new PIXI.Point(dollSize, dollSize),
-            [new PIXI.Point(-220, appHeight * 0.75 ),
-            new PIXI.Point(-180, appHeight * 0.775 ),
-            new PIXI.Point(-140, appHeight * 0.8   )],
+            [new PIXI.Point(-220, appHeight * 0.75),
+            new PIXI.Point(-180, appHeight * 0.775),
+            new PIXI.Point(-140, appHeight * 0.8)],
             new PIXI.Point(appWidth, 0),
             200,
             new PIXI.Rectangle(this.box.position.x - this.box.pivot.x, this.box.position.y - this.box.pivot.y, this.box.width, this.box.height),
             () => {
-                if(this.overtimeActive)
-                {
+                if (this.overtimeActive) {
                     this.gameStats.successfulOvertimeAction();
-                } else
-                {
+                } else {
                     this.gameStats.successfulAction();
 
                 }
@@ -240,84 +218,37 @@ export class factoryScene implements gameScene {
         const intervalId = setInterval(() => {
             this.lightFilter.alpha -= 0.005;
             if (this.lightFilter.alpha <= 0.2) {
-              window.clearInterval(intervalId);        
-              this.photoDisplayer.spawnClickablePrompt("overtime", [()=>{
+                window.clearInterval(intervalId);
+                this.photoDisplayer.spawnClickablePrompt("overtime", [() => {
                     this.gameStats.finishDay(this.clock.getTime());
                     this.sceneManager.loadScene('homeScene');
-              }]);
+                }]);
             }
         }, 20);
 
     }
 
-    public spawnShadows(rowCount: number) {
-
-        for (let rows = rowCount; rows > 0; rows--) {
-            let shadowSprite;
-            if (rows === 1) {
-                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths1[0]);
-            } else if (rows === 2) {
-                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths2[0]);
-            } else {
-                shadowSprite = PIXI.Sprite.from(this.shadowSpritePaths3[0]);
-            }
-            this.app.stage.addChild(shadowSprite);
-            
-            const shadowPos = shadowSprite.position;
-            const shadowTarg = new PIXI.Point(0, 0);
-
-            shadowSprite.position.set(0 - this.app.view.width, 0); // manual spacing fix
-            shadowSprite.width = this.app.view.width;
-            shadowSprite.height = this.app.view.height;
-
-
-
-
-            let intervalCount = 0;
-            const spriteID = setInterval(() => {
-                intervalCount++;
-                shadowSprite.position = utilMath.lerpPoint(shadowPos, shadowTarg, 0.03);
-                if (shadowPos.position === shadowTarg || intervalCount >= 150) {
-                    console.log("done");
-                    window.clearInterval(spriteID);
-                    this.animateWorkers(shadowSprite);
+    public spawnAnimatedWorkers() {
+        const spriteAnimationNames = this.assetManager.animationSpriteNames;
+        const spritePathsAnimations = spriteAnimationNames.map(spriteNames => spriteNames.map(this.getTexture));
+        const animatedSprites = spritePathsAnimations.map(spritePathsAnimation =>
+            new PIXI.AnimatedSprite(spritePathsAnimation));
+        let playAnimation = true;
+        animatedSprites.forEach(sprite => {
+            this.app.stage.addChild(sprite);
+            sprite.position.set(0, 0); // manual spacing fix
+            sprite.width = this.app.view.width;
+            sprite.height = this.app.view.height;
+            sprite.gotoAndStop(1);
+            const nextFrame = () => {
+                if (playAnimation) {
+                    sprite.gotoAndStop(Math.floor(sprite.totalFrames *0.999* Math.random()));
+                    setTimeout(nextFrame, 300 + Math.random() * 300);
                 }
-            }, 33)
-
-        }
-
-    }
-
-    public animateWorkers(shadowSprite: any) {
-        let interval = 0;
-        let direction = "up"; // workers move up and down while working, starting with up
-        if(shadowSprite===undefined){
-            alert('no sprite');
-        }
-        this.spriteAnim = setInterval(() => {
-            interval = interval + 1;
-
-            // switch directions each 5 animation frames
-            if (interval > 5) {
-                interval = 0;
-                if (direction === "up")
-                    direction = "down";
-                else if (direction === "down")
-                    direction = "up";
-            }
-
-            // set lerp targets
-            const shadowTargetUp = new PIXI.Point(0, 0 + this.app.view.height * 0.03);
-            const shadowTargetDown = new PIXI.Point(0, 0 - this.app.view.height * 0.03);
-
-            // move up or down
-            if (direction === "up") {
-                shadowSprite.position = utilMath.lerpPoint(shadowSprite.position, shadowTargetUp, 0.03);
-            } else {
-                shadowSprite.position = utilMath.lerpPoint(shadowSprite.position, shadowTargetDown, 0.03);
-            }
-
-        }, 100)
+            };
+            nextFrame();
+        });
+        this.stopWorkerAnimation = () => playAnimation = false;
     }
 
     public removeScene() {
@@ -325,6 +256,7 @@ export class factoryScene implements gameScene {
         this.crowdSound.stop();
         this.conveyorSound.stop();
         this.clockSound.stop();
+        this.stopWorkerAnimation();
         window.clearInterval(this.spriteAnim);
         this.clock.stopClock();
         this.app.stage.removeChild(this.app.stage);
@@ -344,15 +276,15 @@ export class factoryScene implements gameScene {
         this.lightFilter.alpha = 1.0;
 
         this.clock.stopClock();
-        this.photoDisplayer.spawnClickablePrompt("workBegins", [()=>{
+        this.photoDisplayer.spawnClickablePrompt("workBegins", [() => {
             setTimeout(() => {
                 this.workBuzzerSound.play();
                 this.dollkeeper.startSpawn();
                 this.clock.startClock();
             }, 1000);
-        
+
         }]);
-        
+
     }
 
     public overTimeBegins() {
@@ -362,15 +294,15 @@ export class factoryScene implements gameScene {
         this.workBuzzerSound.play();
         this.crowdSound.stop();
         this.clock.stopClock();
-        
+
         //spawn dialog box
-        this.photoDisplayer.spawnClickablePrompt("workEnds", [()=>{
+        this.photoDisplayer.spawnClickablePrompt("workEnds", [() => {
             setTimeout(() => {
                 //dim lights
                 this.lightFilter.alpha = 0.5;
                 this.lightSwitchSound.play();
                 this.clock.startClock();
-    
+
             }, 1000);
         }]);
     }
