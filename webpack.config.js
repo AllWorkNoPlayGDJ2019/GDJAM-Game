@@ -37,7 +37,7 @@ module.exports = {
             filename: './index.html' //relative to root of the application
         }),
         new CopyPlugin([
-            { from: './assets', to: './dist/assets' },
+            { from: './assets', to: './assets' },
         ]),
         new NormalModuleReplacementPlugin(/'\.\.\/assets/,/'\.\.\/assets/),
         new NormalModuleReplacementPlugin(/"\.\.\/\.\/dist/,/\./),

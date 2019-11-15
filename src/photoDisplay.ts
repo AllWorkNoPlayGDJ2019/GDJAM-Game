@@ -43,7 +43,8 @@ export class photoDisplay {
 
         const startTime = new Date().getTime();
         const photoIntervalID = setInterval(() => {
-            photo.position = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
+            const point =  utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
+            photo.position.set(point.x,point.y);
             photo.rotation = utilMath.lerp(photo.rotation, photoTargetRotation, 0.015);
 
             if (new Date().getTime() - startTime > 2000) {
@@ -67,7 +68,8 @@ export class photoDisplay {
         const startTime = new Date().getTime();
         
         const photoIntervalID = setInterval(() => {
-            photo.position = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
+            const point =  utilMath.lerpPoint(photo.position, photoTargetPosition, 0.02);
+            photo.position.set(point.x,point.y);
             photo.rotation = utilMath.lerp(photo.rotation, photoTargetRotation, 0.015);
 
             if (new Date().getTime() - startTime > 2000) {
@@ -109,7 +111,7 @@ export class photoDisplay {
         const top = new PIXI.Point(this.app.view.width / 2, 0.0);
         const photoTargetPosition = new PIXI.Point(this.app.view.width / 2, this.app.view.height / 2);
 
-        photo.position = top;
+        photo.position.set(top.x,top.y);
         photo.pivot.set(photo.width / 2, photo.height / 2);
 
         const clickableSprite = new Clickable(photo);
@@ -122,7 +124,8 @@ export class photoDisplay {
 
         // appear
         const photoIntervalID = setInterval(() => {
-            photo.position = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.08);
+            const point = utilMath.lerpPoint(photo.position, photoTargetPosition, 0.08);
+            photo.position.set(point.x,point.y);
             photo.alpha = utilMath.lerp(photo.alpha, 1.0, 0.05);
         }, 33);
 
@@ -130,7 +133,8 @@ export class photoDisplay {
             window.clearInterval(photoIntervalID);
             // disappear
             const disappearID = setInterval(() => {
-                photo.position = utilMath.lerpPoint(photo.position, top, 0.08);
+                const point =  utilMath.lerpPoint(photo.position, top, 0.08);
+                photo.position.set(point.x,point.y);
                 photo.alpha = utilMath.lerp(photo.alpha, 0.0, 0.05);
 
                 if (photo.alpha < 0.1) {
