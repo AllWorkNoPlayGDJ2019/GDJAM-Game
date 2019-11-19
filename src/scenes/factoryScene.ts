@@ -18,7 +18,7 @@ export class factoryScene implements gameScene {
     }
 
 
-
+    private isDisposing = false;
     private overtimeActive: boolean;
     public background: PIXI.Sprite;
     public belt: PIXI.Sprite;
@@ -34,7 +34,7 @@ export class factoryScene implements gameScene {
 
     public lightFilter = new PIXI.filters.AlphaFilter();
     private clock: Clock;
-    public spriteAnim;
+    public spriteAnim: number;
 
     private textBox: PIXI.Text;
     private box: PIXI.Sprite;
@@ -242,7 +242,7 @@ export class factoryScene implements gameScene {
             sprite.gotoAndStop(1);
             const nextFrame = () => {
                 if (playAnimation) {
-                    sprite.gotoAndStop(Math.floor(sprite.totalFrames *0.999* Math.random()));
+                    sprite.gotoAndStop(Math.floor(sprite.totalFrames * 0.999 * Math.random()));
                     setTimeout(nextFrame, 300 + Math.random() * 300);
                 }
             };
@@ -278,6 +278,7 @@ export class factoryScene implements gameScene {
         this.clock.stopClock();
         this.photoDisplayer.spawnClickablePrompt("workBegins", [() => {
             setTimeout(() => {
+                if (this.isDisposing === true) { return; }
                 this.workBuzzerSound.play();
                 this.dollkeeper.startSpawn();
                 this.clock.startClock();
@@ -298,7 +299,7 @@ export class factoryScene implements gameScene {
         //spawn dialog box
         this.photoDisplayer.spawnClickablePrompt("workEnds", [() => {
             setTimeout(() => {
-                //dim lights
+                if (this.isDisposing === true) { return; }
                 this.lightFilter.alpha = 0.5;
                 this.lightSwitchSound.play();
                 this.clock.startClock();
