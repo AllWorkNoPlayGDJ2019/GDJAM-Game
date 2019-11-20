@@ -34,6 +34,7 @@ module.exports = {
     plugins: [
         new HtmlWebpackPlugin({
             hash: true,
+            title: 'The gift you could not give',
             filename: './index.html' //relative to root of the application
         }),
         new CopyPlugin([
