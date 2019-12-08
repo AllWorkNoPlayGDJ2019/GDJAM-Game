@@ -133,6 +133,10 @@ export class photoDisplay {
             window.clearInterval(photoIntervalID);
             // disappear
             const disappearID = setInterval(() => {
+                if(photo===undefined || photo.transform===null){
+                    window.clearInterval(disappearID);
+                    return;
+                }
                 const point =  utilMath.lerpPoint(photo.position, top, 0.08);
                 photo.position.set(point.x,point.y);
                 photo.alpha = utilMath.lerp(photo.alpha, 0.0, 0.05);
@@ -144,11 +148,6 @@ export class photoDisplay {
                 }
 
             }, 33);
-
-            //setTimeout(() => {
-            //    window.clearInterval(disappearID);
-            //    photo.parent.removeChild();
-            //}, 2.0);
         });
 
         return photo;
