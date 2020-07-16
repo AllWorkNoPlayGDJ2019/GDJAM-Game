@@ -66,9 +66,8 @@ export class Clock {
     }
 
     public startClock() {
-        console.log("started time");
-        //this.time = startTime;
         if (this.timerId !== undefined) { return; }
+        console.log("started time");
         this.timerId = window.setInterval(() => {
             this.time.setMinutes(this.time.getUTCMinutes() + 2, this.time.getSeconds() + 30);
             if (this.time.getUTCHours() == 6 && this.time.getUTCMinutes() == 0) {
@@ -86,6 +85,7 @@ export class Clock {
     public stopClock() {
         console.log("stopped time");
         window.clearInterval(this.timerId);
+        this.timerId = undefined;
     }
 
     public displayTime(hour: number, minute: number) {
