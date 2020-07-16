@@ -68,9 +68,9 @@ export class Clock {
     public startClock() {
         console.log("started time");
         //this.time = startTime;
+        if (this.timerId !== undefined) { return; }
         this.timerId = window.setInterval(() => {
             this.time.setMinutes(this.time.getUTCMinutes() + 2, this.time.getSeconds() + 30);
-           // console.log(this.time.getUTCHours() + ":" + this.time.getUTCMinutes());
             if (this.time.getUTCHours() == 6 && this.time.getUTCMinutes() == 0) {
                 this.workStartCallback.forEach(x => x());
             }
